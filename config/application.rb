@@ -31,5 +31,20 @@ module Tax
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.autoload_paths << Rails.root.join("app", "facades")
+    config.autoload_paths << Rails.root.join("app", "lib")
+
+    # Rails (6.1.1) does not set Vary: correctly, so Accept: must be ignored
+    config.action_dispatch.ignore_accept_header = true
+
+    config.action_dispatch.cookies_same_site_protection = :strict
+
+    # Different databases have different types and expression syntax
+    require "active_record/database_configurations"
+    db_adapter = ActiveRecord::DatabaseConfigurations
+      .new(Rails.application.config.database_configuration)
+      .configs_for(env_name: Rails.env)[0].adapter
+    config.paths["db"] = File.join("db", "schema", db_adapter)
   end
 end
