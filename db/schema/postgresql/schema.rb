@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2021_09_01_191845) do
     t.decimal "tax_free_interest_at_basic_rate", precision: 12, scale: 2
     t.decimal "tax_free_interest_at_higher_rate", precision: 12, scale: 2
     t.decimal "pension_annual_allowance", precision: 12, scale: 2
+    t.decimal "sco_personal_allowance", precision: 12, scale: 2
     t.decimal "sco_starter_band", precision: 12, scale: 2
     t.decimal "sco_starter_rate", precision: 12, scale: 6
     t.decimal "sco_basic_band", precision: 12, scale: 2

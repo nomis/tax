@@ -21,6 +21,7 @@ class CreateGBTaxYears < ActiveRecord::Migration[6.1]
 
       t.decimal :pension_annual_allowance, precision: 12, scale: 2
 
+      t.decimal :sco_personal_allowance, precision: 12, scale: 2
       t.decimal :sco_starter_band, precision: 12, scale: 2
       t.decimal :sco_starter_rate, precision: 12, scale: 6
       t.decimal :sco_basic_band, precision: 12, scale: 2
