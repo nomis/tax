@@ -4,11 +4,11 @@ class CreateGBIncomeMonths < ActiveRecord::Migration[6.1]
       t.references :company, null: false, foreign_key: true
       t.references :year, null: false, foreign_key: {to_table: :gb_tax_years}
       t.integer :month, null: false
-      t.integer :day
 
       t.decimal :basic, precision: 12, scale: 2, null: false, default: 0
       t.decimal :bonus, precision: 12, scale: 2, null: false, default: 0
       t.decimal :arrears, precision: 12, scale: 2, null: false, default: 0
+      t.decimal :overtime, precision: 12, scale: 2, null: false, default: 0
       t.decimal :extra, precision: 12, scale: 2, null: false, default: 0
 
       t.decimal :net_pension, precision: 12, scale: 2, null: false, default: 0

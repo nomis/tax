@@ -6,6 +6,8 @@ class CreateGBTaxYears < ActiveRecord::Migration[6.1]
       t.decimal :gross_interest, precision: 12, scale: 2, null: false, default: 0
       t.decimal :net_interest, precision: 12, scale: 2, null: false, default: 0
       t.decimal :net_gift_aid, precision: 12, scale: 2, null: false, default: 0
+      t.decimal :dividends, precision: 12, scale: 2, null: false, default: 0
+      t.decimal :dividend_tax_credit, precision: 12, scale: 2, null: false, default: 0
 
       t.decimal :allowable_expenses, precision: 12, scale: 2, null: false, default: 0
 

@@ -26,10 +26,10 @@ ActiveRecord::Schema.define(version: 2021_09_01_191845) do
     t.bigint "company_id", null: false
     t.bigint "year_id", null: false
     t.integer "month", null: false
-    t.integer "day"
     t.decimal "basic", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "bonus", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "arrears", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "overtime", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "extra", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "net_pension", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "employer_pension", precision: 12, scale: 2, default: "0.0", null: false
@@ -57,6 +57,8 @@ ActiveRecord::Schema.define(version: 2021_09_01_191845) do
     t.decimal "gross_interest", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "net_interest", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "net_gift_aid", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "dividends", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "dividend_tax_credit", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "allowable_expenses", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "personal_allowance", precision: 12, scale: 2
     t.decimal "basic_band", precision: 12, scale: 2
