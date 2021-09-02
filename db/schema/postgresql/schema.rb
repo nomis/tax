@@ -59,14 +59,19 @@ ActiveRecord::Schema.define(version: 2021_09_01_191845) do
     t.decimal "net_gift_aid", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "allowable_expenses", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "personal_allowance", precision: 12, scale: 2
-    t.decimal "basic_rate", precision: 12, scale: 2
-    t.decimal "higher_rate", precision: 12, scale: 2
-    t.decimal "additional_rate", precision: 12, scale: 2
+    t.decimal "basic_band", precision: 12, scale: 2
+    t.decimal "basic_rate", precision: 12, scale: 6
+    t.decimal "higher_band", precision: 12, scale: 2
+    t.decimal "higher_rate", precision: 12, scale: 6
+    t.decimal "additional_band", precision: 12, scale: 2
+    t.decimal "additional_rate", precision: 12, scale: 6
     t.decimal "tax_free_interest_at_basic_rate", precision: 12, scale: 2
     t.decimal "tax_free_interest_at_higher_rate", precision: 12, scale: 2
     t.decimal "pension_annual_allowance", precision: 12, scale: 2
-    t.decimal "sco_starter_rate", precision: 12, scale: 2
-    t.decimal "sco_intermediate_rate", precision: 12, scale: 2
+    t.decimal "sco_starter_band", precision: 12, scale: 2
+    t.decimal "sco_starter_rate", precision: 12, scale: 6
+    t.decimal "sco_intermediate_band", precision: 12, scale: 2
+    t.decimal "sco_intermediate_rate", precision: 12, scale: 6
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["year"], name: "index_gb_tax_years_on_year", unique: true
