@@ -3,6 +3,6 @@ class GBIncomeMonth < ApplicationRecord
   belongs_to :company
 
   def total_income
-    basic + bonus + arrears + extra
+    basic + bonus + arrears + overtime + extra
   end
 end
