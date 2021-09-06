@@ -58,6 +58,9 @@ class GBTaxYear < ApplicationRecord
     errors.add(:additional_rate, "missing") if additional_rate.nil?
     errors.add(:pension_annual_allowance, "missing") if pension_annual_allowance.nil?
 
+    errors.add(:starting_rate_for_savings, "missing") if starting_rate_for_savings.nil?
+    errors.add(:starting_band_for_savings, "missing") if starting_band_for_savings.nil?
+
     if year < 2016
       errors.add(:tax_free_interest_at_basic_rate, "does not exist") if !tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "does not exist") if !tax_free_interest_at_higher_rate.nil?

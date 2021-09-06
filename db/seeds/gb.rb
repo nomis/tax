@@ -10,6 +10,9 @@ raise y.higher_band.to_s if y.higher_band != 115630
 y.additional_rate = 45
 
 y.pension_annual_allowance = 50000
+
+y.starting_rate_for_savings = 10
+y.starting_band_for_savings = 2710
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2013)
@@ -24,6 +27,9 @@ raise y.higher_band.to_s if y.higher_band != 117990
 y.additional_rate = 45
 
 y.pension_annual_allowance = 50000
+
+y.starting_rate_for_savings = 10
+y.starting_band_for_savings = 2790
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2014)
@@ -38,6 +44,9 @@ raise y.higher_band.to_s if y.higher_band != 118135
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+
+y.starting_rate_for_savings = 10
+y.starting_band_for_savings = 2880
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2015)
@@ -52,6 +61,9 @@ raise y.higher_band.to_s if y.higher_band != 118215
 y.additional_rate = 45
 
 y.pension_annual_allowance = 80000
+
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2016)
@@ -69,6 +81,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2017)
@@ -86,6 +100,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 
 y.sco_starter_rate = 0
 y.sco_starter_band = 0
@@ -116,6 +132,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 
 y.sco_starter_rate = 19
 y.sco_starter_band = 13850 - y.personal_allowance
@@ -148,6 +166,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 
 y.sco_starter_rate = 19
 y.sco_starter_band = 14549 - y.personal_allowance
@@ -180,6 +200,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 
 y.sco_starter_rate = 19
 y.sco_starter_band = 14585 - y.personal_allowance
@@ -212,6 +234,8 @@ y.pension_annual_allowance = 40000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
 
 y.sco_starter_rate = 19
 y.sco_starter_band = 14667 - y.personal_allowance
