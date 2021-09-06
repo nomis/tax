@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_06_190722) do
+ActiveRecord::Schema.define(version: 2021_09_06_193415) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,7 +69,6 @@ ActiveRecord::Schema.define(version: 2021_09_06_190722) do
     t.decimal "tax_free_interest_at_basic_rate", precision: 12, scale: 2
     t.decimal "tax_free_interest_at_higher_rate", precision: 12, scale: 2
     t.decimal "pension_annual_allowance", precision: 12, scale: 2
-    t.decimal "sco_personal_allowance", precision: 12, scale: 2
     t.decimal "sco_starter_band", precision: 12, scale: 2
     t.decimal "sco_starter_rate", precision: 12, scale: 6
     t.decimal "sco_basic_band", precision: 12, scale: 2

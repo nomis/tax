@@ -87,7 +87,6 @@ y.pension_annual_allowance = 40000
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
 
-y.sco_personal_allowance = y.personal_allowance
 y.sco_starter_rate = 0
 y.sco_starter_band = 0
 y.sco_basic_rate = 20
@@ -97,7 +96,7 @@ y.sco_intermediate_rate = 0
 y.sco_intermediate_band = 0
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43000
 y.sco_higher_rate = 40
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.sco_personal_allowance)
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 118500
 y.sco_additional_rate = 45
 y.save!
@@ -118,9 +117,8 @@ y.pension_annual_allowance = 40000
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
 
-y.sco_personal_allowance = y.personal_allowance
 y.sco_starter_rate = 19
-y.sco_starter_band = 13850 - y.sco_personal_allowance
+y.sco_starter_band = 13850 - y.personal_allowance
 raise y.sco_starter_band.to_s if y.sco_starter_band != 2000
 y.sco_basic_rate = 20
 y.sco_basic_band = 24000 - y.below_sco_basic_band
@@ -130,7 +128,7 @@ y.sco_intermediate_band = 43430 - y.below_sco_intermediate_band
 raise y.sco_intermediate_band.to_s if y.sco_intermediate_band != 19430
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.sco_personal_allowance)
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 118420
 y.sco_additional_rate = 46
 y.save!
@@ -151,9 +149,8 @@ y.pension_annual_allowance = 40000
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
 
-y.sco_personal_allowance = y.personal_allowance
 y.sco_starter_rate = 19
-y.sco_starter_band = 14549 - y.sco_personal_allowance
+y.sco_starter_band = 14549 - y.personal_allowance
 raise y.sco_starter_band.to_s if y.sco_starter_band != 2049
 y.sco_basic_rate = 20
 y.sco_basic_band = 24944 - y.below_sco_basic_band
@@ -163,7 +160,7 @@ y.sco_intermediate_band = 43430 - y.below_sco_intermediate_band
 raise y.sco_intermediate_band.to_s if y.sco_intermediate_band != 18486
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.sco_personal_allowance)
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 119070
 y.sco_additional_rate = 46
 y.save!
@@ -184,9 +181,8 @@ y.pension_annual_allowance = 40000
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
 
-y.sco_personal_allowance = y.personal_allowance
 y.sco_starter_rate = 19
-y.sco_starter_band = 14585 - y.sco_personal_allowance
+y.sco_starter_band = 14585 - y.personal_allowance
 raise y.sco_starter_band.to_s if y.sco_starter_band != 2085
 y.sco_basic_rate = 20
 y.sco_basic_band = 25158 - y.below_sco_basic_band
@@ -196,7 +192,7 @@ y.sco_intermediate_band = 43430 - y.below_sco_intermediate_band
 raise y.sco_intermediate_band.to_s if y.sco_intermediate_band != 18272
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.sco_personal_allowance)
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 119070
 y.sco_additional_rate = 46
 y.save!
@@ -217,9 +213,8 @@ y.pension_annual_allowance = 40000
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
 
-y.sco_personal_allowance = y.personal_allowance
 y.sco_starter_rate = 19
-y.sco_starter_band = 14667 - y.sco_personal_allowance
+y.sco_starter_band = 14667 - y.personal_allowance
 raise y.sco_starter_band.to_s if y.sco_starter_band != 2097
 y.sco_basic_rate = 20
 y.sco_basic_band = 25296 - y.below_sco_basic_band
@@ -229,7 +224,7 @@ y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
 raise y.sco_intermediate_band.to_s if y.sco_intermediate_band != 18366
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
 y.sco_higher_rate = 41
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.sco_personal_allowance)
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 118908
 y.sco_additional_rate = 46
 y.save!

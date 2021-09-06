@@ -38,7 +38,7 @@ class GBTaxYear < ApplicationRecord
   end
 
   def below_sco_basic_band
-    sco_personal_allowance + sco_starter_band
+    personal_allowance + sco_starter_band
   end
 
   def below_sco_intermediate_band
@@ -68,7 +68,6 @@ class GBTaxYear < ApplicationRecord
 
     if year < 2017
       errors.add(:taxpayer_type, "invalid") if !["GB-UKM"].include? taxpayer_type
-      errors.add(:sco_personal_allowance, "does not exist") if !sco_personal_allowance.nil?
       errors.add(:sco_starter_band, "does not exist") if !sco_starter_band.nil?
       errors.add(:sco_starter_rate, "does not exist") if !sco_starter_rate.nil?
       errors.add(:sco_basic_band, "does not exist") if !sco_basic_band.nil?
@@ -80,7 +79,6 @@ class GBTaxYear < ApplicationRecord
       errors.add(:sco_additional_rate, "does not exist") if !sco_additional_rate.nil?
     else
       errors.add(:taxpayer_type, "invalid") if !["GB-UKM", "GB-SCT"].include? taxpayer_type
-      errors.add(:sco_personal_allowance, "missing") if sco_personal_allowance.nil?
       errors.add(:sco_starter_band, "missing") if sco_starter_band.nil?
       errors.add(:sco_starter_rate, "missing") if sco_starter_rate.nil?
       errors.add(:sco_basic_band, "missing") if sco_basic_band.nil?
