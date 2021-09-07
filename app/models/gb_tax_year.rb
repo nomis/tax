@@ -9,6 +9,14 @@ class GBTaxYear < ApplicationRecord
     "#{year}/#{(year + 1) % 100}"
   end
 
+  def uk_taxpayer?
+    self.taxpayer_type == "GB-UKM"
+  end
+
+  def sco_taxpayer?
+    self.taxpayer_type == "GB-SCT"
+  end
+
   def total_income
     income_months.sum(&:total_income)
   end
@@ -49,6 +57,8 @@ class GBTaxYear < ApplicationRecord
     below_sco_intermediate_band + sco_intermediate_band
   end
 
+  private
+
   def validate_tax_values
     errors.add(:personal_allowance, "missing") if personal_allowance.nil?
     errors.add(:basic_band, "missing") if basic_band.nil?
@@ -61,6 +71,8 @@ class GBTaxYear < ApplicationRecord
     errors.add(:starting_rate_for_savings, "missing") if starting_rate_for_savings.nil?
     errors.add(:starting_band_for_savings, "missing") if starting_band_for_savings.nil?
 
+    valid_taxpayers = ["GB-UKM"]
+
     if year < 2016
       errors.add(:tax_free_interest_at_basic_rate, "does not exist") if !tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "does not exist") if !tax_free_interest_at_higher_rate.nil?
@@ -70,7 +82,6 @@ class GBTaxYear < ApplicationRecord
     end
 
     if year < 2017
-      errors.add(:taxpayer_type, "invalid") if !["GB-UKM"].include? taxpayer_type
       errors.add(:sco_starter_band, "does not exist") if !sco_starter_band.nil?
       errors.add(:sco_starter_rate, "does not exist") if !sco_starter_rate.nil?
       errors.add(:sco_basic_band, "does not exist") if !sco_basic_band.nil?
@@ -81,7 +92,7 @@ class GBTaxYear < ApplicationRecord
       errors.add(:sco_higher_rate, "does not exist") if !sco_higher_rate.nil?
       errors.add(:sco_additional_rate, "does not exist") if !sco_additional_rate.nil?
     else
-      errors.add(:taxpayer_type, "invalid") if !["GB-UKM", "GB-SCT"].include? taxpayer_type
+      valid_taxpayers << "GB-SCT"
       errors.add(:sco_starter_band, "missing") if sco_starter_band.nil?
       errors.add(:sco_starter_rate, "missing") if sco_starter_rate.nil?
       errors.add(:sco_basic_band, "missing") if sco_basic_band.nil?
@@ -92,5 +103,7 @@ class GBTaxYear < ApplicationRecord
       errors.add(:sco_higher_rate, "missing") if sco_higher_rate.nil?
       errors.add(:sco_additional_rate, "missing") if sco_additional_rate.nil?
     end
+
+    errors.add(:taxpayer_type, "invalid") if !valid_taxpayers.include? taxpayer_type
   end
 end
