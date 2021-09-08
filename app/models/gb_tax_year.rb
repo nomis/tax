@@ -33,6 +33,10 @@ class GBTaxYear < ApplicationRecord
     paye_net_pension_contributions + sipp_net_pension_contributions
   end
 
+  def total_flexible_remuneration
+    income_months.sum(&:flexible_remuneration)
+  end
+
   def total_employer_pension_contributions
     income_months.sum(&:employer_pension)
   end
@@ -76,9 +80,18 @@ class GBTaxYear < ApplicationRecord
     if year < 2016
       errors.add(:tax_free_interest_at_basic_rate, "does not exist") if !tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "does not exist") if !tax_free_interest_at_higher_rate.nil?
+
+      errors.add(:pension_annual_allowance_tapering_threshold_income, "does not exist") if !pension_annual_allowance_tapering_threshold_income.nil?
+      errors.add(:pension_annual_allowance_tapering_adjusted_income, "does not exist") if !pension_annual_allowance_tapering_adjusted_income.nil?
+      errors.add(:pension_annual_allowance_tapering_min_reduced, "does not exist") if !pension_annual_allowance_tapering_min_reduced.nil?
     else
+      valid_taxpayers << "GB-SCT"
       errors.add(:tax_free_interest_at_basic_rate, "missing") if tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "missing") if tax_free_interest_at_higher_rate.nil?
+
+      errors.add(:pension_annual_allowance_tapering_threshold_income, "missing") if pension_annual_allowance_tapering_threshold_income.nil?
+      errors.add(:pension_annual_allowance_tapering_adjusted_income, "missing") if pension_annual_allowance_tapering_adjusted_income.nil?
+      errors.add(:pension_annual_allowance_tapering_min_reduced, "missing") if pension_annual_allowance_tapering_min_reduced.nil?
     end
 
     if year < 2017
@@ -92,7 +105,6 @@ class GBTaxYear < ApplicationRecord
       errors.add(:sco_higher_rate, "does not exist") if !sco_higher_rate.nil?
       errors.add(:sco_additional_rate, "does not exist") if !sco_additional_rate.nil?
     else
-      valid_taxpayers << "GB-SCT"
       errors.add(:sco_starter_band, "missing") if sco_starter_band.nil?
       errors.add(:sco_starter_rate, "missing") if sco_starter_rate.nil?
       errors.add(:sco_basic_band, "missing") if sco_basic_band.nil?

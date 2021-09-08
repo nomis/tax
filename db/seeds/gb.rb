@@ -78,6 +78,9 @@ raise y.higher_band.to_s if y.higher_band != 118000
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 110000
+y.pension_annual_allowance_tapering_adjusted_income = 150000
+y.pension_annual_allowance_tapering_min_reduced = 10000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
@@ -97,6 +100,9 @@ raise y.higher_band.to_s if y.higher_band != 116500
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 110000
+y.pension_annual_allowance_tapering_adjusted_income = 150000
+y.pension_annual_allowance_tapering_min_reduced = 10000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
@@ -129,6 +135,9 @@ raise y.higher_band.to_s if y.higher_band != 115500
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 110000
+y.pension_annual_allowance_tapering_adjusted_income = 150000
+y.pension_annual_allowance_tapering_min_reduced = 10000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
@@ -163,6 +172,9 @@ raise y.higher_band.to_s if y.higher_band != 112500
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 110000
+y.pension_annual_allowance_tapering_adjusted_income = 150000
+y.pension_annual_allowance_tapering_min_reduced = 10000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
@@ -197,6 +209,9 @@ raise y.higher_band.to_s if y.higher_band != 112500
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 240000
+y.pension_annual_allowance_tapering_adjusted_income = 200000
+y.pension_annual_allowance_tapering_min_reduced = 4000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
@@ -231,6 +246,9 @@ raise y.higher_band.to_s if y.higher_band != 112300
 y.additional_rate = 45
 
 y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 240000
+y.pension_annual_allowance_tapering_adjusted_income = 200000
+y.pension_annual_allowance_tapering_min_reduced = 4000
 
 y.tax_free_interest_at_basic_rate = 1000
 y.tax_free_interest_at_higher_rate = 500
