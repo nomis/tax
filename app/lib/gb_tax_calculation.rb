@@ -195,19 +195,50 @@ class GBTaxCalculation
     initial = calculation("Initial Calculation", 0, 0)
     @calculations << initial[:elements]
 
-    if paye_gross_pension_contributions > 0
-      paye_pension = calculation("Without SIPP Calculation",
-        basic_rate_tax_relief - sipp_gross_pension_contributions,
-        paye_gross_pension_contributions.ceil)
-      @calculations << paye_pension[:elements]
-    else
-      paye_pension = initial
-    end
+    paye_pension = calculation("Without SIPP Calculation",
+      basic_rate_tax_relief - sipp_gross_pension_contributions,
+      paye_gross_pension_contributions.ceil)
+    @calculations << paye_pension[:elements]
 
     final = calculation("Final Pension Calculation")
     @calculations << final[:elements]
 
-    @outputs = [
+    @outputs = []
+
+    if @data.year >= 2017 && @data.sco_taxpayer?
+      higher_income = [
+        paye_pension[:non_savings_non_dividend_higher_income],
+        paye_pension[:savings_dividend_higher_income]
+      ].max
+    else
+      higher_income = paye_pension[:higher_income]
+    end
+
+    target_sipp = [paye_pension[:pension_annual_allowance_remaining], higher_income].min
+
+    outputs << ["SIPP Pension Contributions",
+      [
+        element(nil, ["Gross", "Net"], nil, [:headings]),
+        element("Minimum", [higher_income, higher_income * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element("Maximum", [target_sipp, target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element,
+        element("Actual", [sipp_gross_pension_contributions, @data.sipp_net_pension_contributions], :amount),
+        element("Difference", [sipp_gross_pension_contributions - target_sipp,
+          @data.sipp_net_pension_contributions - target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+      ]
+    ]
+
+    outputs << ["Remaining tax band below higher rate",
+      if @data.year >= 2017 && @data.sco_taxpayer?
+        [
+          element("Non-savings, non-dividend", final[:non_savings_non_dividend_remaining_below_higher], :amount),
+          element("Savings and dividend", final[:savings_dividend_remaining_below_higher], :amount),
+        ]
+      else
+        [
+          element("All income", final[:remaining_below_higher], :amount),
+        ]
+      end
     ]
   end
 
@@ -263,8 +294,17 @@ class GBTaxCalculation
     end
     total
   end
+
+  def total_allocated(allocateds, from)
+    total = nil
+    allocateds.each do |allocated|
+      allocated.each do |key, value|
+        total = [0, 0] if key == from
+        total[0] += value[0] if !total.nil?
+        total[1] += value[1] if !total.nil?
+      end
     end
-    value
+    total
   end
 
   def elements_for_allocation(names, bands, rates, allocated, discarded = false)
@@ -418,10 +458,14 @@ class GBTaxCalculation
 
     result[:elements] = [name, elements]
     if @data.year >= 2017 && @data.sco_taxpayer?
-      result[:non_savings_non_dividend_remaining_below_higher] = remaining_allocation(sco_emp_bands, :higher)
-      result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_bands, :higher)
+      result[:non_savings_non_dividend_remaining_below_higher] = remaining_allocation(sco_emp_remaining, :higher)
+      result[:non_savings_non_dividend_higher_income] = total_allocated([sco_emp_allocated], :higher)[0]
+
+      result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
+      result[:savings_dividend_higher_income] = total_allocated([sav_allocated], :higher)[0]
     else
-      result[:remaining_below_higher] = remaining_allocation(sav_bands, :higher)
+      result[:remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
+      result[:higher_income] = total_allocated([emp_allocated, sav_allocated], :higher)[0]
     end
     result[:tax] = emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
     result[:pension_annual_allowance_remaining] = pension_annual_allowance_remaining_with_previous_years(calc_pension_contributions)

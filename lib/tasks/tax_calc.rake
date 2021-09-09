@@ -52,7 +52,10 @@ namespace :tax do
           puts ANSI::Code.underline { name }
           output_elements.call(elements)
         end
-        output_elements.call(calc.outputs)
+        calc.outputs.each do |name, elements|
+          puts ANSI::Code.underline { name }
+          output_elements.call(elements)
+        end
       end
     end
   end
