@@ -248,6 +248,20 @@ class GBTaxCalculation
         ]
       end
     ]
+
+    interest_tax_paid = @data.net_interest.floor * (basic_rate_savings_interest / (100 - basic_rate_savings_interest))
+    total_tax_paid = @data.total_paye_paid.ceil + interest_tax_paid
+
+    outputs << ["Tax Adjustment",
+      [
+        element("Basic Rate increase", basic_rate_tax_relief, :amount, [:comparable]),
+        element("Income Tax charged", final[:tax], :amount, [:comparable]),
+        element("PAYE Tax paid", @data.total_paye_paid.ceil, :amount, [:comparable]),
+        element("Interest Tax paid", interest_tax_paid, :amount, [:comparable]),
+        element("Income Tax paid", total_tax_paid, :amount, [:comparable]),
+        element("Difference", total_tax_paid - final[:tax], :amount, [:comparable]),
+      ]
+    ]
   end
 
   def element(name = nil, values = [], formats = nil, markers = [])
