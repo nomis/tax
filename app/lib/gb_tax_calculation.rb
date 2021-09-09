@@ -205,23 +205,27 @@ class GBTaxCalculation
 
     @outputs = []
 
-    if @data.year >= 2017 && @data.sco_taxpayer?
-      higher_income = [
+    higher_income = if @data.year >= 2017 && @data.sco_taxpayer?
+      [
         paye_pension[:non_savings_non_dividend_higher_income],
         paye_pension[:savings_dividend_higher_income]
       ].max
     else
-      higher_income = paye_pension[:higher_income]
+      paye_pension[:higher_income]
     end
 
+    min_sipp = higher_income
+    max_sipp = [paye_pension[:pension_annual_allowance_remaining],
+      total_income - (basic_rate_tax_relief - sipp_gross_pension_contributions)].min
     target_sipp = [paye_pension[:pension_annual_allowance_remaining], higher_income].min
 
     outputs << ["SIPP Pension Contributions",
       [
         element(nil, ["Gross", "Net"], nil, [:headings]),
-        element("Minimum", [higher_income, higher_income * (1 - basic_rate_pension_contributions / 100)], :amount),
-        element("Maximum", [target_sipp, target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element("Minimum", [min_sipp, min_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element("Maximum", [max_sipp, max_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
         element,
+        element("Target", [target_sipp, target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
         element("Actual", [sipp_gross_pension_contributions, @data.sipp_net_pension_contributions], :amount),
         element("Difference", [sipp_gross_pension_contributions - target_sipp,
           @data.sipp_net_pension_contributions - target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
