@@ -299,10 +299,10 @@ class GBTaxCalculation
     total
   end
 
-  def total_allocated(allocateds, from)
+  def total_allocated(allocateds, from = nil)
     total = nil
     allocateds.each do |allocated|
-      subtotal = nil
+      subtotal = from.nil? ? [0, 0] : nil
       allocated.each do |key, value|
         subtotal = [0, 0] if key == from
         subtotal[0] += value[0] if !subtotal.nil?
@@ -475,11 +475,11 @@ class GBTaxCalculation
       result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:savings_dividend_higher_income] = total_allocated([sav_allocated], :higher)[0]
 
-      result[:tax] = sco_emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
+      result[:tax] = total_allocated([sco_emp_allocated, sav_allocated])[1]
     else
       result[:remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:higher_income] = total_allocated([emp_allocated, sav_allocated], :higher)[0]
-      result[:tax] = emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
+      result[:tax] = total_allocated([emp_allocated, sav_allocated])[1]
     end
     result[:pension_annual_allowance_remaining] = pension_annual_allowance_remaining_with_previous_years(calc_pension_contributions)
     result
