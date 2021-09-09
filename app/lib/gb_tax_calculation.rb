@@ -269,15 +269,12 @@ class GBTaxCalculation
     markers = []
     markers << :discarded if discarded
 
-    elements << element("", ["Band", "Rate"], nil, [:indent, :headings] + markers)
+    elements << element("", ["Band", "Rate", "Income", "Tax"], nil, [:indent, :headings] + markers)
     names.each do |key, name|
-      elements << element(name, [bands[key], rates[key]], [:amount, :percent], [:indent] + markers)
-    end
-    elements << element
-
-    elements << element("", ["Income", "Tax"], nil, [:indent, :headings] + markers)
-    names.each do |key, name|
-      elements << element(name, allocated[key], :amount, [:indent] + markers + (key == :higher ? [:higher] : []))
+      elements << element(name,
+        [bands[key], rates[key]] + allocated[key],
+        [:amount, :percent, :amount, :amount],
+        [:indent] + markers + (key == :higher ? [:higher] : []))
     end
 
     elements
