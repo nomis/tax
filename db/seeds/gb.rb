@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# frozen_string_literal: true
+
 y = GBTaxYear.find_or_create_by(year: 2012)
 y.personal_allowance = 8105
 

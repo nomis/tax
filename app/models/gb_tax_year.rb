@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# frozen_string_literal: true
+
 class GBTaxYear < ApplicationRecord
   has_many :income_months, class_name: "GBIncomeMonth", foreign_key: "year_id", inverse_of: :year
   has_many :pension_contributions, class_name: "GBPensionContribution", foreign_key: "year_id", inverse_of: :year
