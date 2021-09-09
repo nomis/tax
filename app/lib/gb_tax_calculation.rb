@@ -302,10 +302,17 @@ class GBTaxCalculation
   def total_allocated(allocateds, from)
     total = nil
     allocateds.each do |allocated|
+      subtotal = nil
       allocated.each do |key, value|
-        total = [0, 0] if key == from
-        total[0] += value[0] if !total.nil?
-        total[1] += value[1] if !total.nil?
+        subtotal = [0, 0] if key == from
+        subtotal[0] += value[0] if !subtotal.nil?
+        subtotal[1] += value[1] if !subtotal.nil?
+      end
+
+      if !subtotal.nil?
+        total = [0, 0] if total.nil?
+        total[0] += subtotal[0]
+        total[1] += subtotal[1]
       end
     end
     total
