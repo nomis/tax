@@ -474,11 +474,13 @@ class GBTaxCalculation
 
       result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:savings_dividend_higher_income] = total_allocated([sav_allocated], :higher)[0]
+
+      result[:tax] = sco_emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
     else
       result[:remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:higher_income] = total_allocated([emp_allocated, sav_allocated], :higher)[0]
+      result[:tax] = emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
     end
-    result[:tax] = emp_allocated.values.map { |income, tax| tax }.sum + sav_allocated.values.map { |income, tax| tax }.sum
     result[:pension_annual_allowance_remaining] = pension_annual_allowance_remaining_with_previous_years(calc_pension_contributions)
     result
   end
