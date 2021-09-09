@@ -155,8 +155,12 @@ class GBTaxCalculation
     (@data.total_net_pension_contributions / (1 - basic_rate_pension_contributions / 100)).ceil
   end
 
+  def basic_rate_tax_relief_without_pension_contributions
+    gross_gift_aid
+  end
+
   def basic_rate_tax_relief
-    gross_gift_aid + total_gross_pension_contributions
+    basic_rate_tax_relief_without_pension_contributions + total_gross_pension_contributions
   end
 
   private
@@ -196,7 +200,7 @@ class GBTaxCalculation
     @calculations << initial[:elements]
 
     paye_pension = calculation("Without SIPP Calculation",
-      basic_rate_tax_relief - sipp_gross_pension_contributions,
+      basic_rate_tax_relief_without_pension_contributions + paye_gross_pension_contributions.ceil,
       paye_gross_pension_contributions.ceil)
     @calculations << paye_pension[:elements]
 
