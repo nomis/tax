@@ -256,10 +256,13 @@ class GBTaxCalculation
   end
 
   def remaining_allocation(bands, below)
-    value = 0
+    total = 0
     bands.each do |key, value|
       break if key == below
-      value += value
+      total += value
+    end
+    total
+  end
     end
     value
   end
