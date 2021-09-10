@@ -204,7 +204,7 @@ class GBTaxCalculation
       paye_gross_pension_contributions.ceil)
     @calculations << paye_pension[:elements]
 
-    final = calculation("Final Pension Calculation")
+    final = calculation("Final Calculation")
     @calculations << final[:elements]
 
     @outputs = []
