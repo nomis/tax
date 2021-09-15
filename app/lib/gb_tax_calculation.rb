@@ -163,6 +163,14 @@ class GBTaxCalculation
     basic_rate_tax_relief_without_pension_contributions + total_gross_pension_contributions
   end
 
+  def best_paye_tax_code(higher_tax)
+    if @data.year >= 2017 && @data.sco_taxpayer?
+      "S" + ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.sco_basic_rate / 100))).floor.to_s + "L"
+    else
+      ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.basic_rate / 100))).floor.to_s + "L"
+    end
+  end
+
   private
 
   def run
@@ -209,19 +217,10 @@ class GBTaxCalculation
 
     @outputs = []
 
-    higher_income = if @data.year >= 2017 && @data.sco_taxpayer?
-      [
-        paye_pension[:non_savings_non_dividend_higher_income],
-        paye_pension[:savings_dividend_higher_income]
-      ].max
-    else
-      paye_pension[:higher_income]
-    end
-
-    min_sipp = higher_income
+    min_sipp = paye_pension[:higher_income]
     max_sipp = [paye_pension[:pension_annual_allowance_remaining],
       total_income - (basic_rate_tax_relief - sipp_gross_pension_contributions)].min
-    target_sipp = [paye_pension[:pension_annual_allowance_remaining], higher_income].min
+    target_sipp = [paye_pension[:pension_annual_allowance_remaining], paye_pension[:higher_income]].min
 
     outputs << ["SIPP Pension Contributions",
       [
@@ -260,6 +259,17 @@ class GBTaxCalculation
         element("Interest Tax paid", interest_tax_paid, :amount, [:comparable]),
         element("Income Tax paid", total_tax_paid, :amount, [:comparable]),
         element("Difference", total_tax_paid - final[:tax], :amount, [:comparable]),
+        element,
+        element("Best PAYE Tax Code (excluding Interest)", best_paye_tax_code(
+            # Assumption: total tax relief does not exceed the higher rate band
+            (basic_rate_tax_relief_without_pension_contributions + (paye_gross_pension_contributions + target_sipp).ceil) * (
+              if @data.year >= 2017 && @data.sco_taxpayer?
+                @data.sco_higher_rate
+              else
+                @data.higher_rate
+              end) / 100
+          )
+        ),
       ]
     ]
   end
@@ -493,6 +503,10 @@ class GBTaxCalculation
       result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:savings_dividend_higher_income] = total_allocated([sav_allocated], :higher)[0]
 
+      result[:higher_income] = [
+          result[:non_savings_non_dividend_higher_income],
+          result[:savings_dividend_higher_income]
+        ].max
       result[:tax] = total_allocated([sco_emp_allocated, sav_allocated])[1]
     else
       result[:remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
