@@ -496,6 +496,9 @@ class GBTaxCalculation
       }
 
       div_allocated, div_remaining = allocate_to_bands(div_bands, div_rates, @data.dividends.floor)
+
+      non_nil_div_remaining = div_remaining.dup
+      non_nil_div_remaining[:nil_rate] = 0
     end
 
     elements << element("Savings and dividend", nil, nil, [:heading])
@@ -539,14 +542,18 @@ class GBTaxCalculation
       result[:non_savings_non_dividend_remaining_below_higher] = remaining_allocation(sco_emp_remaining, :higher)
       result[:non_savings_non_dividend_higher_income] = total_allocated([sco_emp_allocated], :higher)[0]
 
-      result[:savings_dividend_remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
-      result[:savings_dividend_higher_income] = total_allocated([sav_allocated], :higher)[0]
+      result[:savings_dividend_remaining_below_higher] = remaining_allocation(non_nil_div_remaining, :higher)
+      result[:savings_dividend_higher_income] = total_allocated([sav_allocated, div_allocated], :higher)[0]
 
       result[:higher_income] = [
           result[:non_savings_non_dividend_higher_income],
           result[:savings_dividend_higher_income]
         ].max
-      result[:tax] = total_allocated([sco_emp_allocated, sav_allocated])[1]
+      result[:tax] = total_allocated([sco_emp_allocated, sav_allocated, div_allocated])[1]
+    elsif @data.year >= 2016
+      result[:remaining_below_higher] = remaining_allocation(non_nil_div_remaining, :higher)
+      result[:higher_income] = total_allocated([emp_allocated, sav_allocated, div_allocated], :higher)[0]
+      result[:tax] = total_allocated([emp_allocated, sav_allocated, div_allocated])[1]
     else
       result[:remaining_below_higher] = remaining_allocation(sav_remaining, :higher)
       result[:higher_income] = total_allocated([emp_allocated, sav_allocated], :higher)[0]
