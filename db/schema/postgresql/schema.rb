@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_16_082300) do
+ActiveRecord::Schema.define(version: 2021_09_16_083728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,10 @@ ActiveRecord::Schema.define(version: 2021_09_16_082300) do
     t.decimal "pension_annual_allowance_tapering_threshold_income", precision: 12, scale: 2
     t.decimal "pension_annual_allowance_tapering_adjusted_income", precision: 12, scale: 2
     t.decimal "pension_annual_allowance_tapering_min_reduced", precision: 12, scale: 2
+    t.decimal "dividend_allowance", precision: 12, scale: 2
+    t.decimal "dividend_basic_rate", precision: 12, scale: 6
+    t.decimal "dividend_higher_rate", precision: 12, scale: 6
+    t.decimal "dividend_additional_rate", precision: 12, scale: 6
     t.index ["year"], name: "index_gb_tax_years_on_year", unique: true
   end
 

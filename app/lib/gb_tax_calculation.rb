@@ -465,6 +465,39 @@ class GBTaxCalculation
 
     sav_allocated, sav_remaining = allocate_to_bands(sav_bands, sav_rates, total_interest)
 
+    # Dividend rules before 2016 not supported
+    if @data.year >= 2016
+      div_names = {
+        personal_allowance: "Personal Allowance",
+      }
+      div_names[:nil_rate] = "Dividend Allowance"
+      div_names.merge!({
+        basic: "Dividend Basic Rate",
+        higher: "Dividend Higher Rate",
+        additional: "Dividend Additional Rate",
+      })
+
+      div_bands = {
+        personal_allowance: sav_remaining[:personal_allowance],
+      }
+      div_bands[:nil_rate] = @data.dividend_allowance
+      div_bands.merge!({
+        basic: sav_remaining[:basic],
+        higher: sav_remaining[:higher],
+        additional: sav_remaining[:additional],
+      })
+
+      div_rates = {
+        personal_allowance: 0,
+        nil_rate: 0,
+        basic: @data.dividend_basic_rate,
+        higher: @data.dividend_higher_rate,
+        additional: @data.dividend_additional_rate,
+      }
+
+      div_allocated, div_remaining = allocate_to_bands(div_bands, div_rates, @data.dividends.floor)
+    end
+
     elements << element("Savings and dividend", nil, nil, [:heading])
 
     if @data.year >= 2017 && @data.sco_taxpayer?
@@ -472,6 +505,12 @@ class GBTaxCalculation
       elements << element(nil, nil, nil, [:discarded])
     end
     elements += elements_for_allocation(sav_names, sav_bands, sav_rates, sav_allocated)
+
+    # Dividend rules before 2016 not supported
+    if @data.year >= 2016 && @data.dividends.floor > 0
+      elements << element
+      elements += elements_for_allocation(div_names, div_bands, div_rates, div_allocated)
+    end
 
     # Pension Annual Allowance rules before 2016 not supported
     if @data.year >= 2016

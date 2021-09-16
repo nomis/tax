@@ -79,19 +79,28 @@ class GBTaxYear < ApplicationRecord
     errors.add(:starting_rate_for_savings, "missing") if starting_rate_for_savings.nil?
     errors.add(:starting_band_for_savings, "missing") if starting_band_for_savings.nil?
 
+    errors.add(:dividend_basic_rate, "missing") if dividend_basic_rate.nil?
+    errors.add(:dividend_higher_rate, "missing") if dividend_higher_rate.nil?
+    errors.add(:dividend_additional_rate, "missing") if dividend_additional_rate.nil?
+
     valid_taxpayers = ["GB-UKM"]
 
     if year < 2016
       errors.add(:tax_free_interest_at_basic_rate, "does not exist") if !tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "does not exist") if !tax_free_interest_at_higher_rate.nil?
 
+      errors.add(:dividend_allowance, "does not exist") if !dividend_allowance.nil?
+
       errors.add(:pension_annual_allowance_tapering_threshold_income, "does not exist") if !pension_annual_allowance_tapering_threshold_income.nil?
       errors.add(:pension_annual_allowance_tapering_adjusted_income, "does not exist") if !pension_annual_allowance_tapering_adjusted_income.nil?
       errors.add(:pension_annual_allowance_tapering_min_reduced, "does not exist") if !pension_annual_allowance_tapering_min_reduced.nil?
     else
       valid_taxpayers << "GB-SCT"
+
       errors.add(:tax_free_interest_at_basic_rate, "missing") if tax_free_interest_at_basic_rate.nil?
       errors.add(:tax_free_interest_at_higher_rate, "missing") if tax_free_interest_at_higher_rate.nil?
+
+      errors.add(:dividend_allowance, "missing") if dividend_allowance.nil?
 
       errors.add(:pension_annual_allowance_tapering_threshold_income, "missing") if pension_annual_allowance_tapering_threshold_income.nil?
       errors.add(:pension_annual_allowance_tapering_adjusted_income, "missing") if pension_annual_allowance_tapering_adjusted_income.nil?
