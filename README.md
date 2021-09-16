@@ -1,24 +1,33 @@
-# README
+# Tax Website
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Created to calculate UK taxes and determine the optimum SIPP contributions.
 
-Things you may want to cover:
+Intended to be run locally in the development environment only.
 
-* Ruby version
+Does not support all parts of tax calculations in older tax years.
 
-* System dependencies
+## Install
 
-* Configuration
+* Standard Ruby on Rails application
+  * Install dependencies with `bundle install` and `yarn`
+* Create a PostgreSQL database (setting `PGDATABASE`, etc. if required)
+* Run `bin/setup` or perform the following steps:
+  * Generate a production `secret_key_base` by running `rails credentials:edit`
+  * Create the database tables by running `rails db:prepare`
 
-* Database creation
+## Copyright
 
-* Database initialization
+    Copyright 2021  Simon Arlott
 
-* How to run the test suite
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-* Services (job queues, cache servers, search engines, etc.)
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-* Deployment instructions
-
-* ...
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
