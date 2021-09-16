@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_160200) do
+ActiveRecord::Schema.define(version: 2021_09_16_082300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(version: 2021_09_08_160200) do
     t.decimal "net_interest", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "net_gift_aid", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "dividends", precision: 12, scale: 2, default: "0.0", null: false
-    t.decimal "foreign_dividend_tax_credit", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "allowable_expenses", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "personal_allowance", precision: 12, scale: 2
     t.decimal "basic_band", precision: 12, scale: 2
@@ -81,7 +80,6 @@ ActiveRecord::Schema.define(version: 2021_09_08_160200) do
     t.decimal "sco_additional_rate", precision: 12, scale: 6
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.decimal "foreign_dividends", precision: 12, scale: 2, default: "0.0", null: false
     t.string "taxpayer_type", default: "GB-UKM", null: false
     t.decimal "starting_band_for_savings", precision: 12, scale: 2
     t.decimal "starting_rate_for_savings", precision: 12, scale: 6
