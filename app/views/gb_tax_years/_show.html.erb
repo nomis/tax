@@ -1,0 +1,51 @@
+<%
+# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-License-Identifier: AGPL-3.0-or-later
+%>
+<table>
+<tr><th>Type</th><td colspan="8"><%= tax_year.taxpayer_type %></td></tr>
+<tr><th colspan="9">Employment Income</th></tr>
+<tr><th rowspan="2">Date</th><th rowspan="2">Basic</th><th rowspan="2">Bonus</th><th rowspan="2">Arrears</th><th rowspan="2">Extra</th><th colspan="2">Pension Contributions</th><th rowspan="2">Tax</th><th rowspan="2">Flex</th></tr>
+<tr><th>Net Employee</th><th>Employer</th></tr>
+<%
+ims = tax_year.income_months.sort(&GBSortDates)
+ims.each do |im| %>
+	<tr>
+		<td><%= im.name %></td>
+		<td align="right"><%= fmt_amount(im.basic) %></td>
+		<td align="right"><%= fmt_amount(im.bonus) %></td>
+		<td align="right"><%= fmt_amount(im.arrears) %></td>
+		<td align="right"><%= fmt_amount(im.total_extra) %></td>
+		<td align="right"><%= fmt_amount(im.net_pension) %></td>
+		<td align="right"><%= fmt_amount(im.employer_pension) %></td>
+		<td align="right"><%= fmt_amount(im.paye_paid) %></td>
+		<td align="right"><%= fmt_amount(im.flexible_remuneration) %></td>
+	</tr>
+<% end %>
+<tr>
+	<th rowspan="2">Total</th>
+	<th align="right"><%= fmt_amount(ims.sum(&:basic)) %></th>
+	<th align="right"><%= fmt_amount(ims.sum(&:bonus)) %></th>
+	<th align="right"><%= fmt_amount(ims.sum(&:arrears)) %></th>
+	<th align="right"><%= fmt_amount(ims.sum(&:total_extra)) %></th>
+	<th rowspan="2" align="right"><%= fmt_amount(ims.sum(&:net_pension)) %></th>
+	<th rowspan="2" align="right"><%= fmt_amount(ims.sum(&:employer_pension)) %></th>
+	<th rowspan="2" align="right"><%= fmt_amount(ims.sum(&:paye_paid)) %></th>
+	<th rowspan="2" align="right"><%= fmt_amount(ims.sum(&:flexible_remuneration)) %></th>
+</tr>
+<tr>
+	<th colspan="4" align="right"><%= fmt_amount(ims.sum(&:total_income)) %></th>
+</tr>
+<tr><th>Allowable Expenses</th><td colspan="4" align="right"><%= fmt_amount(tax_year.allowable_expenses) %></td></tr>
+<tr><th colspan="5">Pension Contributions</th></tr>
+<tr><th>Date</th><th colspan="4">Net Amount</th></tr>
+<% tax_year.pension_contributions.sort(&GBSortDates).each do |pc| %>
+	<tr><td><%= pc.name %></td><td colspan="4" align="right"><%= fmt_amount(pc.net_amount) %></td></tr>
+<% end %>
+<tr><th>Total</th><th colspan="4" align="right"><%= fmt_amount(tax_year.sipp_net_pension_contributions) %></th></tr>
+<tr><th colspan="5">Savings and Dividends</th></tr>
+<tr><th colspan="2">Gross Interest</th><td colspan="3" align="right"><%= fmt_amount(tax_year.gross_interest) %></td></tr>
+<tr><th colspan="2">Net Interest</th><td colspan="3" align="right"><%= fmt_amount(tax_year.net_interest) %></td></tr>
+<tr><th colspan="2">Net Gift Aid</th><td colspan="3" align="right"><%= fmt_amount(tax_year.net_gift_aid) %></td></tr>
+<tr><th colspan="2">Dividends</th><td colspan="3" align="right"><%= fmt_amount(tax_year.dividends) %></td></tr>
+</table>

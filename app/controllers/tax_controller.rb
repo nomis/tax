@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
-Rails.application.routes.draw do
-  root "tax#index"
-
-  resources :gb_tax_years, constraints: { format: ["html"] }
+class TaxController < ApplicationController
+  def index
+    @gb_years = GBTaxYear.all.order(year: :desc)
+  end
 end

@@ -13,12 +13,23 @@ class GBTaxYear < ApplicationRecord
     "#{year}/#{(year + 1) % 100}"
   end
 
+  def to_i
+    year
+  end
+
   def uk_taxpayer?
     self.taxpayer_type == "GB-UKM"
   end
 
   def sco_taxpayer?
     self.taxpayer_type == "GB-SCT"
+  end
+
+  def taxpayer_type_name
+    case taxpayer_type
+    when "GB-UKM"; "UK"
+    when "GB-SCT"; "Scottish"
+    end
   end
 
   def total_income

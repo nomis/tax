@@ -1,0 +1,27 @@
+<%
+# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-License-Identifier: AGPL-3.0-or-later
+%>
+<h1>Tax</h1>
+<h2>United Kingdom</h2>
+<% @gb_years.each do |ty| %>
+<h3><%= ty.name %> (<%= ty.taxpayer_type_name %>)</h3>
+<table>
+<tr>
+	<th>Income</th><td align="right"><%= fmt_amount(ty.income_months.sum(&:total_income)) %></td>
+	<th>Eee Contrib</th><td align="right"><%= fmt_amount(ty.income_months.sum(&:net_pension)) %></td>
+	<th>Eer Contrib</th><td align="right"><%= fmt_amount(ty.income_months.sum(&:employer_pension)) %></td>
+	<th>Flexible</th><td align="right"><%= fmt_amount(ty.income_months.sum(&:flexible_remuneration)) %></td>
+	<th>Expenses</th><td align="right"><%= fmt_amount(ty.allowable_expenses) %></td>
+	<td class="link"><a href="#">Edit</a></td>
+</tr>
+<tr>
+	<th>Gross Interest</th><td align="right"><%= fmt_amount(ty.gross_interest) %></td>
+	<th>Net Interest</th><td align="right"><%= fmt_amount(ty.net_interest) %></td>
+	<th>Net Gift Aid</th><td align="right"><%= fmt_amount(ty.net_gift_aid) %></td>
+	<th>Dividends</th><td align="right"><%= fmt_amount(ty.dividends) %></td>
+	<th>SIPP Contrib</th><td align="right"><%= fmt_amount(ty.sipp_net_pension_contributions) %></td>
+	<td class="link"><a href="#">View</a></td>
+</tr>
+</table>
+<% end %>
