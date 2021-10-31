@@ -3,8 +3,6 @@
 # frozen_string_literal: true
 
 class GBTaxCalculation
-  include ActionView::Helpers::NumberHelper
-
   def initialize(year)
     @data = GBTaxYear.find_by(year: year)
     @run = false
@@ -274,32 +272,7 @@ class GBTaxCalculation
     ]
   end
 
-  def element(name = nil, values = [], formats = nil, markers = [])
-    if !values.is_a? Array
-      values = [values]
-    end
-
-    if !formats.is_a? Array
-      formats = [formats] * values.size
-    end
-
-    values = values.each_with_index.map do |value, index|
-      case formats[index]
-      when :amount
-        "£" + number_with_precision(value, precision: 2, delimiter: ",")
-      when :percent
-        number_with_precision(value, precision: 2) + "%"
-      else
-        value
-      end
-    end
-
-    {
-      name: name,
-      values: values,
-      markers: markers
-    }
-  end
+  define_method :element, &GBFormat.singleton_method(:element)
 
   def allocate_to_bands(bands, rates, amount)
     allocated = {}
@@ -351,9 +324,9 @@ class GBTaxCalculation
     markers = []
     markers << :discarded if discarded
 
-    elements << element("", ["Band", "Rate", "Income", "Tax"], nil, [:indent, :headings] + markers)
+    elements << GBFormat::element("", ["Band", "Rate", "Income", "Tax"], nil, [:indent, :headings] + markers)
     names.each do |key, name|
-      elements << element(name,
+      elements << GBFormat::element(name,
         [bands[key], rates[key]] + allocated[key],
         [:amount, :percent, :amount, :amount],
         [:indent] + markers + (key == :higher ? [:higher] : []))
@@ -366,8 +339,8 @@ class GBTaxCalculation
     result = {}
     elements = []
 
-    elements << element("Basic Rate limit increase", calc_basic_band_increase, :amount)
-    elements << element
+    elements << GBFormat::element("Basic Rate limit increase", calc_basic_band_increase, :amount)
+    elements << GBFormat::element
 
     if @data.year >= 2017
       sco_emp_names = {
@@ -423,14 +396,14 @@ class GBTaxCalculation
 
     emp_allocated, emp_remaining = allocate_to_bands(emp_bands, emp_rates, employment_income)
 
-    elements << element("Non-savings, non-dividend", nil, nil, [:heading])
+    elements << GBFormat::element("Non-savings, non-dividend", nil, nil, [:heading])
 
     if @data.year >= 2017 && @data.sco_taxpayer?
       elements += elements_for_allocation(sco_emp_names, sco_emp_bands, sco_emp_rates, sco_emp_allocated)
     else
       elements += elements_for_allocation(emp_names, emp_bands, emp_rates, emp_allocated)
     end
-    elements << element
+    elements << GBFormat::element
 
     sav_names = {
       personal_allowance: "Personal Allowance",
