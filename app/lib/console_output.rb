@@ -3,18 +3,33 @@
 # frozen_string_literal: true
 
 module ConsoleOutput
-  def self.output_sections(sections)
+  def self.output_sections(sections, options = {})
+    options = options.merge(max_width_sections(sections))
     sections.each do |name, elements|
-      output_section(name, elements)
+      output_section(name, elements, options)
     end
   end
 
-  def self.output_section(name, elements)
-    puts ANSI::Code.underline { name }
-    output_elements(elements)
+  def self.max_width_sections(sections)
+    name_width = 1
+    value_width = 1
+    sections.each do |name, elements|
+      elements.each do |element|
+        name_width = [name_width, element[:name].length].max if element[:name].present?
+        element[:values].each do |value|
+          value_width = [value_width, value.length].max if value.present?
+        end
+      end
+    end
+    {name_width: name_width + 2, value_width: value_width + 2}
   end
 
-  def self.output_elements(elements)
+  def self.output_section(name, elements, options = {})
+    puts ANSI::Code.underline { name } if name.present?
+    output_elements(elements, options)
+  end
+
+  def self.output_elements(elements, options = {})
     elements.each do |element|
       name = element[:name]
       values = element[:values]
@@ -33,14 +48,14 @@ module ConsoleOutput
       end
 
       print colour
-      printf "%-50s", name
+      printf "%-*s", options.fetch(:name_width, 50), name
 
       values.each do |value|
         if element[:markers].include? :headings
-          print " " * [1, 16 - value.length].max
+          print " " * [1, options.fetch(:value_width, 15) - value.length + 1].max
           print ANSI::Code.underline { colour + value }
         else
-          printf " %15s", value
+          printf " %*s", options.fetch(:value_width, 15), value
         end
       end
 

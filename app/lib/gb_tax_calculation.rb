@@ -175,29 +175,32 @@ class GBTaxCalculation
     return if @run
     @run ||= true
 
-    @inputs = [
-      element("Pay from all employments", @data.total_income.floor, :amount, [:comparable]),
-      element("minus Allowable Expenses", @data.allowable_expenses.ceil, :amount, [:comparable]),
-      element("Total from all employments", employment_income, :amount, [:comparable]),
-      element,
-      element("Gross Interest", @data.gross_interest, :amount),
-      element("Net Interest", @data.net_interest, :amount),
-      element("Interest (UK)", total_interest, :amount, [:comparable]),
-      element,
-      element("Total income received", total_income, :amount, [:comparable]),
-      element("minus Personal Allowance", @data.personal_allowance, :amount, [:comparable]),
-      element("Total income on which tax is due", taxable_income, :amount, [:comparable]),
-      element("Income: non-savings, non-dividend", taxable_income_non_savings_non_dividend, :amount, [:indent]),
-      element("Income: savings and dividend", taxable_income_savings_dividend, :amount, [:indent]),
-      element,
-      element("Gift Aid", @data.net_gift_aid, :amount),
-      element("Basic Rate increase for Gift Aid", gross_gift_aid, :amount, [:comparable]),
-      element,
-      element("PAYE Pension Contributions", paye_gross_pension_contributions, :amount),
-      element("SIPP Contributions", sipp_gross_pension_contributions, :amount),
-      element("Basic Rate increase for Pension Contributions", total_gross_pension_contributions, :amount, [:comparable]),
-      element,
-      element("Employer Pension Contributions", @data.total_employer_pension_contributions, :amount),
+    @inputs = []
+    @inputs << [nil,
+      [
+        element("Pay from all employments", @data.total_income.floor, :amount, [:comparable]),
+        element("minus Allowable Expenses", @data.allowable_expenses.ceil, :amount, [:comparable]),
+        element("Total from all employments", employment_income, :amount, [:comparable]),
+        element,
+        element("Gross Interest", @data.gross_interest, :amount),
+        element("Net Interest", @data.net_interest, :amount),
+        element("Interest (UK)", total_interest, :amount, [:comparable]),
+        element,
+        element("Total income received", total_income, :amount, [:comparable]),
+        element("minus Personal Allowance", @data.personal_allowance, :amount, [:comparable]),
+        element("Total income on which tax is due", taxable_income, :amount, [:comparable]),
+        element("Income: non-savings, non-dividend", taxable_income_non_savings_non_dividend, :amount, [:indent]),
+        element("Income: savings and dividend", taxable_income_savings_dividend, :amount, [:indent]),
+        element,
+        element("Gift Aid", @data.net_gift_aid, :amount),
+        element("Basic Rate increase for Gift Aid", gross_gift_aid, :amount, [:comparable]),
+        element,
+        element("PAYE Pension Contributions", paye_gross_pension_contributions, :amount),
+        element("SIPP Contributions", sipp_gross_pension_contributions, :amount),
+        element("Basic Rate increase for Pension Contributions", total_gross_pension_contributions, :amount, [:comparable]),
+        element,
+        element("Employer Pension Contributions", @data.total_employer_pension_contributions, :amount),
+      ]
     ]
 
     @calculations = []

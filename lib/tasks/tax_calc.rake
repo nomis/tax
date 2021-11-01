@@ -11,9 +11,7 @@ namespace :tax do
 
         calc = GBTaxCalculation.new(year.to_i)
 
-        ConsoleOutput::output_elements(calc.inputs)
-        ConsoleOutput::output_sections(calc.calculations)
-        ConsoleOutput::output_sections(calc.outputs)
+        ConsoleOutput::output_sections(calc.inputs + calc.calculations + calc.outputs)
       end
     end
   end
