@@ -23,6 +23,15 @@ class GBTaxCalculation
     @outputs
   end
 
+  def target_sipp_gross_pension_contributions
+    run
+    @target_sipp
+  end
+
+  def target_sipp_net_pension_contributions
+    target_sipp_gross_pension_contributions * (1 - basic_rate_pension_contributions / 100)
+  end
+
   def basic_rate_non_savings_non_dividend
     if @data.sco_taxpayer?
       @data.sco_basic_rate
@@ -161,15 +170,31 @@ class GBTaxCalculation
     basic_rate_tax_relief_without_pension_contributions + total_gross_pension_contributions
   end
 
-  def best_paye_tax_code(higher_tax)
+  def best_paye_tax_code
+    # Assumption: total tax relief does not exceed the higher rate band
+    best_paye_tax_code_for_tax(
+      (
+        basic_rate_tax_relief_without_pension_contributions \
+          + (paye_gross_pension_contributions + target_sipp_gross_pension_contributions).ceil
+      ) * (
+        if @data.year >= 2017 && @data.sco_taxpayer?
+          @data.sco_higher_rate
+        else
+          @data.higher_rate
+        end / 100
+      )
+    )
+  end
+
+  private
+
+  def best_paye_tax_code_for_tax(higher_tax)
     if @data.year >= 2017 && @data.sco_taxpayer?
       "S" + ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.sco_basic_rate / 100))).floor.to_s + "L"
     else
       ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.basic_rate / 100))).floor.to_s + "L"
     end
   end
-
-  private
 
   def run
     return if @run
@@ -221,7 +246,7 @@ class GBTaxCalculation
     min_sipp = paye_pension[:higher_income]
     max_sipp = [paye_pension[:pension_annual_allowance_remaining],
       total_income - (basic_rate_tax_relief - sipp_gross_pension_contributions)].min
-    target_sipp = [paye_pension[:pension_annual_allowance_remaining], paye_pension[:higher_income]].min
+    @target_sipp = [paye_pension[:pension_annual_allowance_remaining], paye_pension[:higher_income]].min
 
     outputs << ["SIPP Pension Contributions",
       [
@@ -229,10 +254,10 @@ class GBTaxCalculation
         element("Minimum", [min_sipp, min_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
         element("Maximum", [max_sipp, max_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
         element,
-        element("Target", [target_sipp, target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element("Target", [target_sipp_gross_pension_contributions, target_sipp_net_pension_contributions], :amount),
         element("Actual", [sipp_gross_pension_contributions, @data.sipp_net_pension_contributions], :amount),
-        element("Difference", [sipp_gross_pension_contributions - target_sipp,
-          @data.sipp_net_pension_contributions - target_sipp * (1 - basic_rate_pension_contributions / 100)], :amount),
+        element("Difference", [sipp_gross_pension_contributions - target_sipp_gross_pension_contributions,
+          @data.sipp_net_pension_contributions - target_sipp_net_pension_contributions], :amount),
       ]
     ]
 
@@ -261,16 +286,7 @@ class GBTaxCalculation
         element("Income Tax paid", total_tax_paid, :amount, [:comparable]),
         element("Difference", total_tax_paid - final[:tax], :amount, [:comparable]),
         element,
-        element("Best PAYE Tax Code (excluding Interest)", best_paye_tax_code(
-            # Assumption: total tax relief does not exceed the higher rate band
-            (basic_rate_tax_relief_without_pension_contributions + (paye_gross_pension_contributions + target_sipp).ceil) * (
-              if @data.year >= 2017 && @data.sco_taxpayer?
-                @data.sco_higher_rate
-              else
-                @data.higher_rate
-              end) / 100
-          )
-        ),
+        element("Best PAYE Tax Code (excluding Interest)", best_paye_tax_code),
       ]
     ]
   end

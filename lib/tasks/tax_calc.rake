@@ -15,4 +15,17 @@ namespace :tax do
       end
     end
   end
+
+  namespace :gb do
+    task :summary => :environment do
+      GBTaxYear.pluck(:year).each do |year|
+        task year.to_s => :environment do
+          puts GBTaxYear.find_by(year: year.to_i).name
+          puts
+
+          ConsoleOutput::output_sections(GBTaxSummary.new(year.to_i).outputs)
+        end
+      end
+    end
+  end
 end
