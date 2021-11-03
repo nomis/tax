@@ -70,9 +70,17 @@ class GBTaxCalculation
     [0, @data.total_income.floor - @data.allowable_expenses.ceil].max
   end
 
+  def gross_interest_for_net(amount)
+    (amount / (1 - basic_rate_savings_interest / 100))
+  end
+
+  def net_interest_for_gross(amount)
+    (amount * (1 - basic_rate_savings_interest / 100))
+  end
+
   def total_interest
     @data.gross_interest.floor \
-      + (@data.net_interest.floor / (1 - basic_rate_savings_interest / 100)).floor
+      + gross_interest_for_net(@data.net_interest.floor).floor
   end
 
   def total_dividends
@@ -150,16 +158,20 @@ class GBTaxCalculation
     (@data.net_gift_aid.ceil / (1 - basic_rate_gift_aid / 100)).ceil
   end
 
+  def gross_pension_contributions_for_net(amount)
+    (amount / (1 - basic_rate_pension_contributions / 100))
+  end
+
   def paye_gross_pension_contributions
-    (@data.paye_net_pension_contributions / (1 - basic_rate_pension_contributions / 100))
+    gross_pension_contributions_for_net(@data.paye_net_pension_contributions)
   end
 
   def sipp_gross_pension_contributions
-    (@data.sipp_net_pension_contributions / (1 - basic_rate_pension_contributions / 100))
+    gross_pension_contributions_for_net(@data.sipp_net_pension_contributions)
   end
 
   def total_gross_pension_contributions
-    (@data.total_net_pension_contributions / (1 - basic_rate_pension_contributions / 100)).ceil
+    gross_pension_contributions_for_net(@data.total_net_pension_contributions).ceil
   end
 
   def basic_rate_tax_relief_without_pension_contributions

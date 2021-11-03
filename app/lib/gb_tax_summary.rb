@@ -34,24 +34,37 @@ class GBTaxSummary
 
     outputs << ["Savings Income",
       [
-        element("Gross Interest", @data.gross_interest, :amount),
-        element("Net Interest", @data.net_interest, :amount),
+        element(nil, ["Gross", "Net"], nil, [:headings]),
+        element("Interest", [
+          @data.gross_interest + @calc.gross_interest_for_net(@data.net_interest),
+          @data.net_interest + @calc.net_interest_for_gross(@data.gross_interest)
+        ], :amount),
       ]
     ]
 
     outputs << ["Tax Relief",
       [
-        element("Gift Aid (Net)", @data.net_gift_aid, :amount),
-        element("Allowable Expenses", @data.allowable_expenses.ceil, :amount),
+        element(nil, ["Gross", "Net"], nil, [:headings]),
+        element("Gift Aid", [@calc.gross_gift_aid, @data.net_gift_aid], :amount),
+        element("Allowable Expenses", @data.allowable_expenses, :amount),
       ]
     ]
 
-    outputs << ["Employee Pension Contributions (Net)",
-      companies.map do |company|
-        element(company.name, @data.income_months.select { |im| im.company == company }.sum(&:net_pension), :amount)
+    outputs << ["Employee Pension Contributions",
+      [
+        element(nil, ["Gross", "Net"], nil, [:headings])
+      ] + companies.map do |company|
+        net_pension = @data.income_months.select { |im| im.company == company }.sum(&:net_pension)
+        element(company.name, [@calc.gross_pension_contributions_for_net(net_pension), net_pension], :amount)
       end + [
-        element("SIPP (Target)", @calc.target_sipp_net_pension_contributions, :amount),
-        element("Total", @data.paye_net_pension_contributions + @calc.target_sipp_net_pension_contributions, :amount),
+        element("SIPP (Target)",
+          [@calc.target_sipp_gross_pension_contributions,
+            @calc.target_sipp_net_pension_contributions],
+          :amount),
+        element("Total",
+          [@calc.paye_gross_pension_contributions + @calc.target_sipp_gross_pension_contributions,
+            @data.paye_net_pension_contributions + @calc.target_sipp_net_pension_contributions],
+          :amount),
       ]
     ]
 
