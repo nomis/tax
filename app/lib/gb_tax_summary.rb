@@ -35,7 +35,9 @@ class GBTaxSummary
     outputs << ["Savings Income",
       [
         element(nil, ["Gross", "Net"], nil, [:headings]),
-        element("Interest", [
+        element("Interest (Gross)", [@data.gross_interest, @calc.net_interest_for_gross(@data.gross_interest)], :amount),
+        element("Interest (Net)", [@calc.gross_interest_for_net(@data.net_interest), @data.net_interest], :amount),
+        element("Total", [
           @data.gross_interest + @calc.gross_interest_for_net(@data.net_interest),
           @data.net_interest + @calc.net_interest_for_gross(@data.gross_interest)
         ], :amount),
