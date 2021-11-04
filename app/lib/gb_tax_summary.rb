@@ -77,7 +77,10 @@ class GBTaxSummary
     ]
 
     outputs << ["PAYE",
-      [
+      companies.map do |company|
+        element(company.name, @data.income_months.select { |im| im.company == company }.sum(&:paye_paid), :amount)
+      end + (companies.length > 1 ? [element("Total", @data.total_paye_paid, :amount)] : []) + [
+        element,
         element("Best Tax Code", @calc.best_paye_tax_code),
       ]
     ]
