@@ -183,28 +183,32 @@ class GBTaxCalculation
   end
 
   def best_paye_tax_code
-    # Assumption: total tax relief does not exceed the higher rate band
+    # Assumption: tax code adjustment is entirely within the higher rate band
     best_paye_tax_code_for_tax(
       (
-        basic_rate_tax_relief_without_pension_contributions \
+        @data.allowable_expenses.ceil
+      ) + (
+        (
+          basic_rate_tax_relief_without_pension_contributions \
           + (paye_gross_pension_contributions + target_sipp_gross_pension_contributions).ceil
-      ) * (
-        if @data.year >= 2017 && @data.sco_taxpayer?
-          @data.sco_higher_rate
-        else
-          @data.higher_rate
-        end / 100
+        ) * (
+          if @data.year >= 2017 && @data.sco_taxpayer?
+            @data.sco_higher_rate
+          else
+            @data.higher_rate
+          end / 100
+        ) / (1 - @data.sco_basic_rate / 100)
       )
     )
   end
 
   private
 
-  def best_paye_tax_code_for_tax(higher_tax)
+  def best_paye_tax_code_for_tax(adjustment)
     if @data.year >= 2017 && @data.sco_taxpayer?
-      "S" + ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.sco_basic_rate / 100))).floor.to_s + "L"
+      "S" + ((@data.personal_allowance / 10) + (adjustment / 10)).floor.to_s + "L"
     else
-      ((@data.personal_allowance / 10) + (higher_tax / 10 / (1 - @data.basic_rate / 100))).floor.to_s + "L"
+      ((@data.personal_allowance / 10) + (adjustment / 10)).floor.to_s + "L"
     end
   end
 
@@ -298,7 +302,7 @@ class GBTaxCalculation
         element("Income Tax paid", total_tax_paid, :amount, [:comparable]),
         element("Difference", total_tax_paid - final[:tax], :amount, [:comparable]),
         element,
-        element("Best PAYE Tax Code (excluding Interest)", best_paye_tax_code),
+        element("Best PAYE Tax Code", best_paye_tax_code),
       ]
     ]
   end
