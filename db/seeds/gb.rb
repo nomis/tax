@@ -348,17 +348,13 @@ y.dividend_higher_rate = "33.75".to_d
 y.dividend_additional_rate = "39.35".to_d
 
 y.sco_starter_rate = 19
-y.sco_starter_band = 14667 - y.personal_allowance
-raise y.sco_starter_band.to_s if y.sco_starter_band != 2097
+y.sco_starter_band = 14732 - y.personal_allowance
 y.sco_basic_rate = 20
-y.sco_basic_band = 25296 - y.below_sco_basic_band
-raise y.sco_basic_band.to_s if y.sco_basic_band != 10629
+y.sco_basic_band = 25688 - y.below_sco_basic_band
 y.sco_intermediate_rate = 21
 y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
-raise y.sco_intermediate_band.to_s if y.sco_intermediate_band != 18366
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
-raise y.sco_higher_band.to_s if y.sco_higher_band != 118908
 y.sco_additional_rate = 46
 y.save!
