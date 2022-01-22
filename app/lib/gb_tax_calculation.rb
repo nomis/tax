@@ -192,12 +192,12 @@ class GBTaxCalculation
           basic_rate_tax_relief_without_pension_contributions \
           + (paye_gross_pension_contributions + target_sipp_gross_pension_contributions).ceil
         ) * (
-          if @data.year >= 2017 && @data.sco_taxpayer?
-            @data.sco_higher_rate
+          1 - if @data.year >= 2017 && @data.sco_taxpayer?
+            @data.sco_basic_rate / @data.sco_higher_rate
           else
-            @data.higher_rate
-          end / 100
-        ) / (1 - @data.sco_basic_rate / 100)
+            @data.basic_rate/ @data.higher_rate
+          end
+        )
       )
     )
   end
