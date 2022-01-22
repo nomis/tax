@@ -101,17 +101,17 @@ class GBTaxCalculation
 
   def pension_annual_allowance_available(calc_pension_contributions = total_gross_pension_contributions)
     if @data.year >= 2017 && \
-        threshold_income(calc_pension_contributions) >= @data.pension_annual_allowance_tapering_threshold_income && \
-        adjusted_income > @data.pension_annual_allowance_tapering_adjusted_income
+        threshold_income(calc_pension_contributions).floor >= @data.pension_annual_allowance_tapering_threshold_income && \
+        adjusted_income.floor > @data.pension_annual_allowance_tapering_adjusted_income
       [@data.pension_annual_allowance_tapering_min_reduced,
-        @data.pension_annual_allowance - ((@data.pension_annual_allowance_tapering_adjusted_income - adjusted_income) / 2).floor].max
+        @data.pension_annual_allowance - ((@data.pension_annual_allowance_tapering_adjusted_income - adjusted_income.floor) / 2).floor].max
     else
       @data.pension_annual_allowance
     end
   end
 
   def pension_annual_allowance_used(calc_pension_contributions = total_gross_pension_contributions)
-    calc_pension_contributions + @data.total_employer_pension_contributions.ceil
+    (calc_pension_contributions + @data.total_employer_pension_contributions).floor
   end
 
   def pension_annual_allowance_remaining(calc_pension_contributions = total_gross_pension_contributions)
@@ -126,20 +126,32 @@ class GBTaxCalculation
         - pension_annual_allowance_used(calc_pension_contributions)].min
   end
 
-  def pension_annual_allowance_available_with_previous_years(calc_pension_contributions = total_gross_pension_contributions)
-    previous_years = (1..3).map { |offset| GBTaxYear.find_by(year: @data.year - offset) }.reject(&:nil?)
+  def pension_annual_allowance_available_with_previous_years(calc_pension_contributions = total_gross_pension_contributions, years = 3)
+    previous_years = (1..years).map { |offset| GBTaxYear.find_by(year: @data.year - offset) }.reject(&:nil?)
     pension_annual_allowance_available(calc_pension_contributions) \
       + previous_years.sum { |previous| GBTaxCalculation.new(previous.year).pension_annual_allowance_remaining }
   end
 
   def pension_annual_allowance_remaining_with_previous_years(calc_pension_contributions = total_gross_pension_contributions)
-    pension_annual_allowance_available_with_previous_years(calc_pension_contributions) - pension_annual_allowance_used(calc_pension_contributions)
+    [0,
+      pension_annual_allowance_available_with_previous_years(calc_pension_contributions) \
+        - pension_annual_allowance_used(calc_pension_contributions)].max
   end
 
   def pension_annual_allowance_exceeded_with_previous_years(calc_pension_contributions = total_gross_pension_contributions)
     0 - [0,
           pension_annual_allowance_available_with_previous_years(calc_pension_contributions) \
             - pension_annual_allowance_used(calc_pension_contributions)].min
+  end
+
+  def pension_annual_allowance_unused_with_previous_years(calc_pension_contributions = total_gross_pension_contributions)
+    [0,
+      [pension_annual_allowance_remaining_with_previous_years(calc_pension_contributions),
+        pension_annual_allowance_available_with_previous_years(calc_pension_contributions, 2) \
+          - [pension_annual_allowance_used(calc_pension_contributions),
+              pension_annual_allowance_available(calc_pension_contributions)].min
+        ].min
+      ].max
   end
 
   def taxable_income
@@ -171,7 +183,7 @@ class GBTaxCalculation
   end
 
   def total_gross_pension_contributions
-    gross_pension_contributions_for_net(@data.total_net_pension_contributions).ceil
+    gross_pension_contributions_for_net(@data.total_net_pension_contributions)
   end
 
   def basic_rate_tax_relief_without_pension_contributions
@@ -179,7 +191,7 @@ class GBTaxCalculation
   end
 
   def basic_rate_tax_relief
-    basic_rate_tax_relief_without_pension_contributions + total_gross_pension_contributions
+    basic_rate_tax_relief_without_pension_contributions + total_gross_pension_contributions.ceil
   end
 
   def best_paye_tax_code
@@ -238,7 +250,7 @@ class GBTaxCalculation
         element,
         element("PAYE Pension Contributions", paye_gross_pension_contributions, :amount),
         element("SIPP Contributions", sipp_gross_pension_contributions, :amount),
-        element("Basic Rate increase for Pension Contributions", total_gross_pension_contributions, :amount, [:comparable]),
+        element("Basic Rate increase for Pension Contributions", total_gross_pension_contributions.ceil, :amount, [:comparable]),
         element,
         element("Employer Pension Contributions", @data.total_employer_pension_contributions, :amount),
       ]
@@ -251,7 +263,7 @@ class GBTaxCalculation
 
     paye_pension = calculation("Without SIPP Calculation",
       basic_rate_tax_relief_without_pension_contributions + paye_gross_pension_contributions.ceil,
-      paye_gross_pension_contributions.ceil)
+      paye_gross_pension_contributions)
     @calculations << paye_pension[:elements]
 
     final = calculation("Final Calculation")
@@ -370,7 +382,8 @@ class GBTaxCalculation
     elements
   end
 
-  def calculation(name, calc_basic_band_increase = basic_rate_tax_relief, calc_pension_contributions = total_gross_pension_contributions)
+  def calculation(name, calc_basic_band_increase = basic_rate_tax_relief,
+      calc_pension_contributions = total_gross_pension_contributions)
     result = {}
     elements = []
 
@@ -528,7 +541,7 @@ class GBTaxCalculation
       elements << element
       elements << element("Pension Annual Allowance", nil, nil, [:heading])
       elements << element("Employee Pension Contributions", calc_pension_contributions, :amount, [:indent])
-      elements << element("Employer Pension Contributions", @data.total_employer_pension_contributions.ceil, :amount, [:indent])
+      elements << element("Employer Pension Contributions", @data.total_employer_pension_contributions, :amount, [:indent])
       elements << element
       elements << element("", ["This Year", "All Years"], nil, [:indent, :headings])
       elements << element("Available",
@@ -543,6 +556,9 @@ class GBTaxCalculation
       elements << element("Exceeded",
         [pension_annual_allowance_exceeded(calc_pension_contributions),
           pension_annual_allowance_exceeded_with_previous_years(calc_pension_contributions)], :amount, [:indent])
+      elements << element("Unused",
+        [nil,
+          pension_annual_allowance_unused_with_previous_years(calc_pension_contributions)], :amount, [:indent])
     end
 
     result[:elements] = [name, elements]

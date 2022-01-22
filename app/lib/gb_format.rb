@@ -15,13 +15,17 @@ module GBFormat
     end
 
     values = values.each_with_index.map do |value, index|
-      case formats[index]
-      when :amount
-        "£" + self.number_with_precision(value, precision: 2, delimiter: ",")
-      when :percent
-        number_with_precision(value, precision: 2) + "%"
+      if value.nil?
+        ""
       else
-        value
+        case formats[index]
+        when :amount
+          "£" + self.number_with_precision(value, precision: 2, delimiter: ",")
+        when :percent
+          number_with_precision(value, precision: 2) + "%"
+        else
+          value
+        end
       end
     end
 
