@@ -63,7 +63,7 @@ class GBTaxSummary
           [@calc.target_sipp_gross_pension_contributions,
             @calc.target_sipp_net_pension_contributions],
           :amount),
-        element("Total",
+        element("Total (Target)",
           [@calc.paye_gross_pension_contributions + @calc.target_sipp_gross_pension_contributions,
             @data.paye_net_pension_contributions + @calc.target_sipp_net_pension_contributions],
           :amount),
