@@ -84,11 +84,11 @@ class GBTaxCalculation
   end
 
   def total_dividends
-    0
+    @data.dividends.floor
   end
 
   def total_income
-    employment_income + total_interest
+    employment_income + total_interest + total_dividends
   end
 
   def adjusted_income
@@ -238,6 +238,7 @@ class GBTaxCalculation
         element("Gross Interest", @data.gross_interest, :amount),
         element("Net Interest", @data.net_interest, :amount),
         element("Interest (UK)", total_interest, :amount, [:comparable]),
+        element("Dividends (UK)", total_dividends, :amount, [:comparable]),
         element,
         element("Total income received", total_income, :amount, [:comparable]),
         element("minus Personal Allowance", @data.personal_allowance, :amount, [:comparable]),
