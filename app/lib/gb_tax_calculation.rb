@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-FileCopyrightText: 2021-2022 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
@@ -303,13 +303,18 @@ class GBTaxCalculation
     ]
 
     interest_tax_paid = @data.net_interest.floor * (basic_rate_savings_interest / (100 - basic_rate_savings_interest))
-    total_tax_paid = @data.total_paye_paid.ceil + interest_tax_paid
+    if @data.year >= 2021
+      paye_tax_paid = @data.total_paye_paid
+    else
+      paye_tax_paid = @data.total_paye_paid.ceil
+    end
+    total_tax_paid = paye_tax_paid + interest_tax_paid
 
     outputs << ["Tax Adjustment",
       [
         element("Basic Rate increase", basic_rate_tax_relief, :amount, [:comparable]),
         element("Income Tax charged", final[:tax], :amount, [:comparable]),
-        element("PAYE Tax paid", @data.total_paye_paid.ceil, :amount, [:comparable]),
+        element("PAYE Tax paid", paye_tax_paid, :amount, [:comparable]),
         element("Interest Tax paid", interest_tax_paid, :amount, [:comparable]),
         element("Income Tax paid", total_tax_paid, :amount, [:comparable]),
         element("Difference", total_tax_paid - final[:tax], :amount, [:comparable]),
