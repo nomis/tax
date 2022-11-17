@@ -358,3 +358,41 @@ y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 y.sco_additional_rate = 46
 y.save!
+
+y = GBTaxYear.find_or_create_by(year: 2023)
+y.personal_allowance = 12570
+
+y.basic_rate = 20
+y.basic_band = 50270 - y.personal_allowance
+raise y.basic_band.to_s if y.basic_band != 37700
+y.higher_rate = 40
+y.higher_band = 125140 - (y.below_higher_band - y.personal_allowance)
+raise y.higher_band.to_s if y.higher_band != 87440
+y.additional_rate = 45
+
+y.pension_annual_allowance = 40000
+y.pension_annual_allowance_tapering_threshold_income = 240000
+y.pension_annual_allowance_tapering_adjusted_income = 200000
+y.pension_annual_allowance_tapering_min_reduced = 4000
+
+y.tax_free_interest_at_basic_rate = 1000
+y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
+
+y.dividend_allowance = 1000
+y.dividend_basic_rate = "8.75".to_d
+y.dividend_higher_rate = "33.75".to_d
+y.dividend_additional_rate = "39.35".to_d
+
+y.sco_starter_rate = 19
+y.sco_starter_band = 14732 - y.personal_allowance
+y.sco_basic_rate = 20
+y.sco_basic_band = 25688 - y.below_sco_basic_band
+y.sco_intermediate_rate = 21
+y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
+raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
+y.sco_higher_rate = 41
+y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
+y.sco_additional_rate = 46
+y.save!
