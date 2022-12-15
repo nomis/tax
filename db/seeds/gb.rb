@@ -392,7 +392,7 @@ y.sco_basic_band = 25688 - y.below_sco_basic_band
 y.sco_intermediate_rate = 21
 y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
-y.sco_higher_rate = 41
-y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
-y.sco_additional_rate = 46
+y.sco_higher_rate = 42
+y.sco_higher_band = 125140 - (y.below_sco_higher_band - y.personal_allowance)
+y.sco_additional_rate = 47
 y.save!
