@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021-2022 Simon Arlott
+# SPDX-FileCopyrightText: 2021-2023 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
@@ -323,6 +323,26 @@ class GBTaxCalculation
         element("Best PAYE Tax Code", best_paye_tax_code),
       ]
     ]
+
+    target_basic_rate_tax_relief = (
+      basic_rate_tax_relief_without_pension_contributions \
+      + (paye_gross_pension_contributions + target_sipp_gross_pension_contributions).ceil
+    )
+    target_gross_pension_contributions = paye_gross_pension_contributions + target_sipp_gross_pension_contributions
+    target = calculation("Target Calculation", target_basic_rate_tax_relief, target_gross_pension_contributions)
+
+    if target[:tax] < final[:tax]
+      outputs << ["Target Tax Adjustment",
+        [
+          element("Basic Rate increase", target_basic_rate_tax_relief, :amount),
+          element("Income Tax charged", target[:tax], :amount),
+          element("PAYE Tax paid", paye_tax_paid, :amount),
+          element("Interest Tax paid", interest_tax_paid, :amount),
+          element("Income Tax paid", total_tax_paid, :amount),
+          element("Difference", total_tax_paid - target[:tax], :amount),
+        ]
+      ]
+    end
   end
 
   define_method :element, &GBFormat.singleton_method(:element)
