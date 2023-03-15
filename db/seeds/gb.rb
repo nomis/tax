@@ -370,7 +370,7 @@ y.higher_band = 125140 - (y.below_higher_band - y.personal_allowance)
 raise y.higher_band.to_s if y.higher_band != 87440
 y.additional_rate = 45
 
-y.pension_annual_allowance = 40000
+y.pension_annual_allowance = 60000
 y.pension_annual_allowance_tapering_threshold_income = 240000
 y.pension_annual_allowance_tapering_adjusted_income = 200000
 y.pension_annual_allowance_tapering_min_reduced = 4000
