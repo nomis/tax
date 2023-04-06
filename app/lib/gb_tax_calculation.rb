@@ -593,6 +593,11 @@ class GBTaxCalculation
       result[:non_savings_non_dividend_higher_income] = total_allocated([sco_emp_allocated], :higher)[0]
 
       result[:savings_dividend_remaining_below_higher] = remaining_allocation(non_nil_div_remaining, :higher)
+      if result[:savings_dividend_remaining_below_higher] > 0
+        result[:savings_dividend_remaining_below_higher] -= @data.tax_free_interest_at_basic_rate
+        result[:savings_dividend_remaining_below_higher] += @data.tax_free_interest_at_higher_rate
+        result[:savings_dividend_remaining_below_higher] = [0, result[:savings_dividend_remaining_below_higher]].max
+      end
       result[:savings_dividend_higher_income] = total_allocated([sav_allocated, div_allocated], :higher)[0]
 
       result[:higher_income] = [
@@ -602,6 +607,11 @@ class GBTaxCalculation
       result[:tax] = total_allocated([sco_emp_allocated, sav_allocated, div_allocated])[1]
     elsif @data.year >= 2016
       result[:remaining_below_higher] = remaining_allocation(non_nil_div_remaining, :higher)
+      if result[:remaining_below_higher] > 0
+        result[:remaining_below_higher] -= @data.tax_free_interest_at_basic_rate
+        result[:remaining_below_higher] += @data.tax_free_interest_at_higher_rate
+        result[:remaining_below_higher] = [0, result[:remaining_below_higher]].max
+      end
       result[:higher_income] = total_allocated([emp_allocated, sav_allocated, div_allocated], :higher)[0]
       result[:tax] = total_allocated([emp_allocated, sav_allocated, div_allocated])[1]
     else
