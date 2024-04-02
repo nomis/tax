@@ -139,13 +139,13 @@ y.dividend_basic_rate = "7.5".to_d
 y.dividend_higher_rate = "32.5".to_d
 y.dividend_additional_rate = "38.1".to_d
 
-y.sco_starter_rate = 0
-y.sco_starter_band = 0
+y.sco_starter_rate = nil
+y.sco_starter_band = nil
 y.sco_basic_rate = 20
 y.sco_basic_band = 43000 - y.below_sco_basic_band
 raise y.sco_basic_band.to_s if y.sco_basic_band != 31500
-y.sco_intermediate_rate = 0
-y.sco_intermediate_band = 0
+y.sco_intermediate_rate = nil
+y.sco_intermediate_band = nil
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43000
 y.sco_higher_rate = 40
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
@@ -192,7 +192,9 @@ raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 118420
-y.sco_additional_rate = 46
+y.sco_top_rate = 46
+
+y.sco_additional_rate = nil
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2019)
@@ -234,7 +236,9 @@ raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 119070
-y.sco_additional_rate = 46
+y.sco_top_rate = 46
+
+y.sco_additional_rate = nil
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2020)
@@ -276,7 +280,9 @@ raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43430
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 119070
-y.sco_additional_rate = 46
+y.sco_top_rate = 46
+
+y.sco_additional_rate = nil
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2021)
@@ -318,7 +324,9 @@ raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
 raise y.sco_higher_band.to_s if y.sco_higher_band != 118908
-y.sco_additional_rate = 46
+y.sco_top_rate = 46
+
+y.sco_additional_rate = nil
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2022)
@@ -356,7 +364,9 @@ y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
 y.sco_higher_rate = 41
 y.sco_higher_band = 150000 - (y.below_sco_higher_band - y.personal_allowance)
-y.sco_additional_rate = 46
+y.sco_top_rate = 46
+
+y.sco_additional_rate = nil
 y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2023)
@@ -394,5 +404,49 @@ y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
 raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
 y.sco_higher_rate = 42
 y.sco_higher_band = 125140 - (y.below_sco_higher_band - y.personal_allowance)
-y.sco_additional_rate = 47
+y.sco_top_rate = 47
+
+y.sco_additional_rate = nil
+y.save!
+
+y = GBTaxYear.find_or_create_by(year: 2024)
+y.personal_allowance = 12570
+
+y.basic_rate = 20
+y.basic_band = 50270 - y.personal_allowance
+raise y.basic_band.to_s if y.basic_band != 37700
+y.higher_rate = 40
+y.higher_band = 125140 - (y.below_higher_band - y.personal_allowance)
+raise y.higher_band.to_s if y.higher_band != 87440
+y.additional_rate = 45
+
+y.pension_annual_allowance = 60000
+y.pension_annual_allowance_tapering_threshold_income = 240000
+y.pension_annual_allowance_tapering_adjusted_income = 200000
+y.pension_annual_allowance_tapering_min_reduced = 4000
+
+y.tax_free_interest_at_basic_rate = 1000
+y.tax_free_interest_at_higher_rate = 500
+y.starting_rate_for_savings = 0
+y.starting_band_for_savings = 5000
+
+y.dividend_allowance = 500
+y.dividend_basic_rate = "8.75".to_d
+y.dividend_higher_rate = "33.75".to_d
+y.dividend_additional_rate = "39.35".to_d
+
+y.sco_starter_rate = 19
+y.sco_starter_band = 14876 - y.personal_allowance
+y.sco_basic_rate = 20
+y.sco_basic_band = 26561 - y.below_sco_basic_band
+y.sco_intermediate_rate = 21
+y.sco_intermediate_band = 43662 - y.below_sco_intermediate_band
+raise y.below_sco_higher_band.to_s if y.below_sco_higher_band != 43662
+y.sco_higher_rate = 42
+y.sco_higher_band = 75000 - (y.below_sco_higher_band - y.personal_allowance)
+y.sco_advanced_rate = 45
+y.sco_advanced_band = 125140 - (y.below_sco_advanced_band - y.personal_allowance)
+y.sco_top_rate = 48
+
+y.sco_additional_rate = nil
 y.save!

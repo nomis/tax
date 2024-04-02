@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 Simon Arlott
+# SPDX-FileCopyrightText: 2021,2024 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
@@ -54,7 +54,7 @@ class GBTaxYear < ApplicationRecord
   end
 
   def below_sco_basic_band
-    personal_allowance + sco_starter_band
+    personal_allowance + (sco_starter_band || 0)
   end
 
   def below_sco_intermediate_band
@@ -62,7 +62,11 @@ class GBTaxYear < ApplicationRecord
   end
 
   def below_sco_higher_band
-    below_sco_intermediate_band + sco_intermediate_band
+    below_sco_intermediate_band + (sco_intermediate_band || 0)
+  end
+
+  def below_sco_advanced_band
+    below_sco_higher_band + sco_higher_band
   end
 
   private
@@ -108,25 +112,43 @@ class GBTaxYear < ApplicationRecord
     end
 
     if year < 2017
-      errors.add(:sco_starter_band, "does not exist") if !sco_starter_band.nil?
-      errors.add(:sco_starter_rate, "does not exist") if !sco_starter_rate.nil?
       errors.add(:sco_basic_band, "does not exist") if !sco_basic_band.nil?
       errors.add(:sco_basic_rate, "does not exist") if !sco_basic_rate.nil?
-      errors.add(:sco_intermediate_band, "does not exist") if !sco_intermediate_band.nil?
-      errors.add(:sco_intermediate_rate, "does not exist") if !sco_intermediate_rate.nil?
       errors.add(:sco_higher_band, "does not exist") if !sco_higher_band.nil?
       errors.add(:sco_higher_rate, "does not exist") if !sco_higher_rate.nil?
+    else
+      errors.add(:sco_basic_band, "missing") if sco_basic_band.nil?
+      errors.add(:sco_basic_rate, "missing") if sco_basic_rate.nil?
+      errors.add(:sco_higher_band, "missing") if sco_higher_band.nil?
+      errors.add(:sco_higher_rate, "missing") if sco_higher_rate.nil?
+    end
+
+    if year == 2017
+      errors.add(:sco_additional_rate, "missing") if sco_additional_rate.nil?
+    else
       errors.add(:sco_additional_rate, "does not exist") if !sco_additional_rate.nil?
+    end
+
+    if year < 2018
+      errors.add(:sco_starter_band, "does not exist") if !sco_starter_band.nil?
+      errors.add(:sco_starter_rate, "does not exist") if !sco_starter_rate.nil?
+      errors.add(:sco_intermediate_band, "does not exist") if !sco_intermediate_band.nil?
+      errors.add(:sco_intermediate_rate, "does not exist") if !sco_intermediate_rate.nil?
+      errors.add(:sco_top_rate, "does not exist") if !sco_top_rate.nil?
     else
       errors.add(:sco_starter_band, "missing") if sco_starter_band.nil?
       errors.add(:sco_starter_rate, "missing") if sco_starter_rate.nil?
-      errors.add(:sco_basic_band, "missing") if sco_basic_band.nil?
-      errors.add(:sco_basic_rate, "missing") if sco_basic_rate.nil?
       errors.add(:sco_intermediate_band, "missing") if sco_intermediate_band.nil?
       errors.add(:sco_intermediate_rate, "missing") if sco_intermediate_rate.nil?
-      errors.add(:sco_higher_band, "missing") if sco_higher_band.nil?
-      errors.add(:sco_higher_rate, "missing") if sco_higher_rate.nil?
-      errors.add(:sco_additional_rate, "missing") if sco_additional_rate.nil?
+      errors.add(:sco_top_rate, "missing") if sco_top_rate.nil?
+    end
+
+    if year < 2024
+      errors.add(:sco_advanced_band, "does not exist") if !sco_advanced_band.nil?
+      errors.add(:sco_advanced_rate, "does not exist") if !sco_advanced_rate.nil?
+    else
+      errors.add(:sco_advanced_band, "missing") if sco_advanced_band.nil?
+      errors.add(:sco_advanced_rate, "missing") if sco_advanced_rate.nil?
     end
 
     errors.add(:taxpayer_type, "invalid") if !valid_taxpayers.include? taxpayer_type

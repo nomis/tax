@@ -423,7 +423,6 @@ class GBTaxCalculation
         basic: "Basic Rate",
         intermediate: "Intermediate Rate",
         higher: "Higher Rate",
-        additional: @data.year < 2018 ? "Additional Rate" : "Top Rate",
       }
 
       sco_emp_bands = {
@@ -432,7 +431,6 @@ class GBTaxCalculation
         basic: @data.sco_basic_band + calc_basic_band_increase,
         intermediate: @data.sco_intermediate_band,
         higher: @data.sco_higher_band,
-        additional: "+Infinity".to_d,
       }
 
       sco_emp_rates = {
@@ -441,8 +439,28 @@ class GBTaxCalculation
         basic: @data.sco_basic_rate,
         intermediate: @data.sco_intermediate_rate,
         higher: @data.sco_higher_rate,
-        additional: @data.sco_additional_rate,
       }
+
+      if @data.year < 2018
+        sco_emp_names.delete(:starter)
+        sco_emp_bands.delete(:starter)
+        sco_emp_rates.delete(:starter)
+        sco_emp_names.delete(:intermediate)
+        sco_emp_bands.delete(:intermediate)
+        sco_emp_rates.delete(:intermediate)
+        sco_emp_names[:additional] = "Additional Rate"
+        sco_emp_bands[:additional] = "+Infinity".to_d
+        sco_emp_rates[:additional] = @data.sco_additional_rate
+      else
+        if @data.year >= 2024
+          sco_emp_names[:advanced] = "Advanced Rate"
+          sco_emp_bands[:advanced] = @data.sco_advanced_band
+          sco_emp_rates[:advanced] = @data.sco_advanced_rate
+        end
+        sco_emp_names[:top] = "Top Rate"
+        sco_emp_bands[:top] = "+Infinity".to_d
+        sco_emp_rates[:top] = @data.sco_top_rate
+      end
 
       sco_emp_allocated, sco_emp_remaining = allocate_to_bands(sco_emp_bands, sco_emp_rates, employment_income)
     end
