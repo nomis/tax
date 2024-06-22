@@ -41,6 +41,10 @@ class GBTaxYear < ApplicationRecord
     income_months.sum(&:flexible_remuneration)
   end
 
+  def total_benefit_in_kind
+    income_months.sum(&:benefit_in_kind)
+  end
+
   def total_employer_pension_contributions
     income_months.sum(&:employer_pension)
   end

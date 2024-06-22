@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021-2023 Simon Arlott
+# SPDX-FileCopyrightText: 2021-2024 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
@@ -67,7 +67,7 @@ class GBTaxCalculation
   end
 
   def employment_income
-    [0, @data.total_income.floor - @data.allowable_expenses.ceil].max
+    [0, @data.total_income.floor - @data.allowable_expenses.ceil].max + @data.total_benefit_in_kind.floor
   end
 
   def gross_interest_for_net(amount)
@@ -207,9 +207,11 @@ class GBTaxCalculation
           1 - if @data.year >= 2017 && @data.sco_taxpayer?
             @data.sco_basic_rate / @data.sco_higher_rate
           else
-            @data.basic_rate/ @data.higher_rate
+            @data.basic_rate / @data.higher_rate
           end
         )
+      ) - (
+        @data.total_benefit_in_kind.floor
       )
     )
   end
@@ -232,7 +234,8 @@ class GBTaxCalculation
     @inputs << [nil,
       [
         element("Pay from all employments", @data.total_income.floor, :amount, [:comparable]),
-        element("minus Allowable Expenses", @data.allowable_expenses.ceil, :amount, [:comparable]),
+        element("plus benefits and expenses received", @data.total_benefit_in_kind.floor, :amount, [:comparable]),
+        element("minus allowable expenses", @data.allowable_expenses.ceil, :amount, [:comparable]),
         element("Total from all employments", employment_income, :amount, [:comparable]),
         element,
         element("Gross Interest", @data.gross_interest, :amount),
@@ -275,7 +278,7 @@ class GBTaxCalculation
     min_sipp = paye_pension[:higher_income]
     max_sipp = [paye_pension[:pension_annual_allowance_remaining],
       total_income - (basic_rate_tax_relief - sipp_gross_pension_contributions)].min
-    target_sipp_adjusted = [paye_pension[:higher_income] + @data.sipp_target_adjust, 0].max
+    target_sipp_adjusted = [paye_pension[:higher_income] - @data.total_benefit_in_kind.floor + @data.sipp_target_adjust, 0].max
     @target_sipp = [paye_pension[:pension_annual_allowance_remaining], target_sipp_adjusted].min
 
     outputs << ["SIPP Pension Contributions",

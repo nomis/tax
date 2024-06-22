@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021-2022 Simon Arlott
+# SPDX-FileCopyrightText: 2021-2022,2024 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
@@ -30,6 +30,12 @@ class GBTaxSummary
       companies.map do |company|
         element(company.name, @data.income_months.select { |im| im.company == company }.sum(&:total_income), :amount)
       end + (companies.length > 1 ? [element("Total", @data.total_income, :amount)] : [])
+    ]
+
+    outputs << ["Benefit In Kind",
+      companies.map do |company|
+        element(company.name, @data.income_months.select { |im| im.company == company }.sum(&:benefit_in_kind), :amount)
+      end + (companies.length > 1 ? [element("Total", @data.total_benefit_in_kind, :amount)] : [])
     ]
 
     outputs << ["Savings Income",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_21_145005) do
+ActiveRecord::Schema.define(version: 2024_06_22_141601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 2024_04_21_145005) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "flexible_remuneration", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "benefit_in_kind", precision: 12, scale: 2, default: "0.0", null: false
     t.index ["company_id"], name: "index_gb_income_months_on_company_id"
     t.index ["year_id", "month", "company_id"], name: "index_gb_income_months_on_year_id_and_month_and_company_id", unique: true
     t.index ["year_id"], name: "index_gb_income_months_on_year_id"
