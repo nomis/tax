@@ -32,8 +32,9 @@ class GBTaxCalculation
     target_sipp_gross_pension_contributions * (1 - basic_rate_pension_contributions / 100)
   end
 
-  def personal_allowance(calc_pension_contributions = total_gross_pension_contributions)
-    amount_over = [0, adjusted_net_income(calc_pension_contributions) - @data.personal_allowance_reduction_threshold].max
+  def personal_allowance(calc_gross_gift_aid = gross_gift_aid,
+      calc_pension_contributions = total_gross_pension_contributions)
+    amount_over = [0, adjusted_net_income(calc_gross_gift_aid, calc_pension_contributions) - @data.personal_allowance_reduction_threshold].max
     quantity_over = (amount_over / @data.personal_allowance_reduction_step).floor
     reduction = quantity_over * @data.personal_allowance_reduction_value
     [0, @data.personal_allowance - reduction].max
@@ -59,10 +60,10 @@ class GBTaxCalculation
     @data.basic_rate
   end
 
-  def savings_nil_rate_band(calc_basic_band_increase, calc_pension_contributions)
+  def savings_nil_rate_band(calc_basic_band_increase, calc_gross_gift_aid, calc_pension_contributions)
     raise if @data.year < 2016
 
-    if total_income > personal_allowance(calc_pension_contributions) + @data.basic_band + calc_basic_band_increase
+    if total_income > personal_allowance(calc_gross_gift_aid, calc_pension_contributions) + @data.basic_band + calc_basic_band_increase
       @data.tax_free_interest_at_higher_rate
     else
       @data.tax_free_interest_at_basic_rate
@@ -106,8 +107,9 @@ class GBTaxCalculation
     total_income + @data.total_employer_pension_contributions
   end
 
-  def adjusted_net_income(calc_pension_contributions = total_gross_pension_contributions)
-    [0, total_income - gross_gift_aid - calc_pension_contributions].max
+  def adjusted_net_income(calc_gross_gift_aid = gross_gift_aid,
+      calc_pension_contributions = total_gross_pension_contributions)
+    [0, total_income - calc_gross_gift_aid - calc_pension_contributions].max
   end
 
   def threshold_income(calc_pension_contributions = total_gross_pension_contributions)
@@ -169,16 +171,16 @@ class GBTaxCalculation
       ].max
   end
 
-  def taxable_income(calc_pension_contributions = total_gross_pension_contributions)
-    [0, total_income - personal_allowance(calc_pension_contributions)].max
+  def taxable_income(calc_gross_gift_aid = gross_gift_aid, calc_pension_contributions = total_gross_pension_contributions)
+    [0, total_income - personal_allowance(calc_gross_gift_aid, calc_pension_contributions)].max
   end
 
-  def taxable_income_non_savings_non_dividend(calc_pension_contributions = total_gross_pension_contributions)
-    [0, employment_income - personal_allowance(calc_pension_contributions)].max
+  def taxable_income_non_savings_non_dividend(calc_gross_gift_aid = gross_gift_aid, calc_pension_contributions = total_gross_pension_contributions)
+    [0, employment_income - personal_allowance(calc_gross_gift_aid, calc_pension_contributions)].max
   end
 
-  def taxable_income_savings_dividend(calc_pension_contributions = total_gross_pension_contributions)
-    [0, (total_interest + total_dividends) - [0, personal_allowance(calc_pension_contributions) - employment_income].max].max
+  def taxable_income_savings_dividend(calc_gross_gift_aid = gross_gift_aid, calc_pension_contributions = total_gross_pension_contributions)
+    [0, (total_interest + total_dividends) - [0, personal_allowance(calc_gross_gift_aid, calc_pension_contributions) - employment_income].max].max
   end
 
   def gross_gift_aid
@@ -212,7 +214,6 @@ class GBTaxCalculation
   def best_paye_tax_code
     # Assumption: tax code adjustment is entirely within the higher rate band
     best_paye_tax_code_for_tax(
-      paye_gross_pension_contributions + target_sipp_gross_pension_contributions,
       (
         @data.allowable_expenses.ceil
       ) + (
@@ -234,11 +235,12 @@ class GBTaxCalculation
 
   private
 
-  def best_paye_tax_code_for_tax(calc_pension_contributions, adjustment)
+  def best_paye_tax_code_for_tax(adjustment)
+    pension_contributions = paye_gross_pension_contributions + target_sipp_gross_pension_contributions
     if @data.year >= 2017 && @data.sco_taxpayer?
-      "S" + ((personal_allowance(calc_pension_contributions) / 10) + (adjustment / 10)).floor.to_s + "L"
+      "S" + ((personal_allowance(gross_gift_aid, pension_contributions) / 10) + (adjustment / 10)).floor.to_s + "L"
     else
-      ((personal_allowance(calc_pension_contributions) / 10) + (adjustment / 10)).floor.to_s + "L"
+      ((personal_allowance(gross_gift_aid, pension_contributions) / 10) + (adjustment / 10)).floor.to_s + "L"
     end
   end
 
@@ -278,12 +280,12 @@ class GBTaxCalculation
 
     @calculations = []
 
-    initial = calculation("Initial Calculation", 0, 0)
+    initial = calculation("Initial Calculation", 0, 0, 0)
     @calculations << initial[:elements]
 
     paye_pension = calculation("Without SIPP Calculation",
       basic_rate_tax_relief_without_pension_contributions + paye_gross_pension_contributions.ceil,
-      paye_gross_pension_contributions)
+      gross_gift_aid, paye_gross_pension_contributions)
     @calculations << paye_pension[:elements]
 
     final = calculation("Final Calculation")
@@ -433,6 +435,7 @@ class GBTaxCalculation
   end
 
   def calculation(name, calc_basic_band_increase = basic_rate_tax_relief,
+      calc_gross_gift_aid = gross_gift_aid,
       calc_pension_contributions = total_gross_pension_contributions)
     result = {}
     elements = []
@@ -450,7 +453,7 @@ class GBTaxCalculation
       }
 
       sco_emp_bands = {
-        personal_allowance: personal_allowance(calc_pension_contributions),
+        personal_allowance: personal_allowance(calc_gross_gift_aid, calc_pension_contributions),
         starter: @data.sco_starter_band,
         basic: @data.sco_basic_band + calc_basic_band_increase,
         intermediate: @data.sco_intermediate_band,
@@ -497,7 +500,7 @@ class GBTaxCalculation
     }
 
     emp_bands = {
-      personal_allowance: personal_allowance(calc_pension_contributions),
+      personal_allowance: personal_allowance(calc_gross_gift_aid, calc_pension_contributions),
       basic: @data.basic_band + calc_basic_band_increase,
       higher: @data.higher_band,
       additional: "+Infinity".to_d,
@@ -535,7 +538,7 @@ class GBTaxCalculation
     sav_bands = {
       personal_allowance: emp_remaining[:personal_allowance],
     }
-    sav_bands[:nil_rate] = savings_nil_rate_band(calc_basic_band_increase, calc_pension_contributions) if @data.year >= 2016
+    sav_bands[:nil_rate] = savings_nil_rate_band(calc_basic_band_increase, calc_gross_gift_aid, calc_pension_contributions) if @data.year >= 2016
     sav_bands.merge!({
       starting_savings: savings_starting_rate_band,
       basic: emp_remaining[:basic],
