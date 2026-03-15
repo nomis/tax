@@ -6,7 +6,7 @@ Intended to be run locally in the development environment only.
 
 Does not support all parts of tax calculations in older tax years.
 
-Does not support the necessary tax calculations for income over £100k.
+Does not support the necessary tax calculations for income over £260k.
 
 ## Install
 
