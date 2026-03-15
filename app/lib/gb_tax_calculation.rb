@@ -87,12 +87,20 @@ class GBTaxCalculation
     @data.dividends.floor
   end
 
+  def total_foreign_income
+    @data.total_foreign_income.floor
+  end
+
   def total_income
-    employment_income + total_interest + total_dividends
+    employment_income + total_interest + total_dividends + total_foreign_income
   end
 
   def adjusted_income
     total_income + @data.total_employer_pension_contributions
+  end
+
+  def adjusted_net_income(calc_pension_contributions = total_gross_pension_contributions)
+    [0, total_income - gross_gift_aid - calc_pension_contributions]
   end
 
   def threshold_income(calc_pension_contributions = total_gross_pension_contributions)

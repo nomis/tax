@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_02_18_195952) do
+ActiveRecord::Schema.define(version: 2026_03_15_094715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,17 @@ ActiveRecord::Schema.define(version: 2026_02_18_195952) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_companies_on_name", unique: true
+  end
+
+  create_table "gb_foreign_income", force: :cascade do |t|
+    t.bigint "year_id", null: false
+    t.text "country", null: false
+    t.decimal "dividend_income", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "dividend_tax_paid", precision: 12, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["year_id", "country"], name: "index_gb_foreign_income_on_year_id_and_country", unique: true
+    t.index ["year_id"], name: "index_gb_foreign_income_on_year_id"
   end
 
   create_table "gb_income_months", force: :cascade do |t|
@@ -99,6 +110,7 @@ ActiveRecord::Schema.define(version: 2026_02_18_195952) do
     t.index ["year"], name: "index_gb_tax_years_on_year", unique: true
   end
 
+  add_foreign_key "gb_foreign_income", "gb_tax_years", column: "year_id"
   add_foreign_key "gb_income_months", "companies"
   add_foreign_key "gb_income_months", "gb_tax_years", column: "year_id"
   add_foreign_key "gb_pension_contributions", "gb_tax_years", column: "year_id"

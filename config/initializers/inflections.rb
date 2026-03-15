@@ -12,4 +12,5 @@
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
    inflect.acronym "GB"
+   inflect.irregular "gb_foreign_income", "gb_foreign_income"
 end

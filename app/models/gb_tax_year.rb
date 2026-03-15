@@ -1,10 +1,11 @@
-# SPDX-FileCopyrightText: 2021,2024 Simon Arlott
+# SPDX-FileCopyrightText: 2021,2024,2026 Simon Arlott
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # frozen_string_literal: true
 
 class GBTaxYear < ApplicationRecord
   has_many :income_months, class_name: "GBIncomeMonth", foreign_key: "year_id", inverse_of: :year
   has_many :pension_contributions, class_name: "GBPensionContribution", foreign_key: "year_id", inverse_of: :year
+  has_many :foreign_income, class_name: "GBForeignIncome", foreign_key: "year_id", inverse_of: :year
 
   validates :year, presence: true, uniqueness: true
   validate :validate_tax_values
@@ -23,6 +24,10 @@ class GBTaxYear < ApplicationRecord
 
   def total_income
     income_months.sum(&:total_income)
+  end
+
+  def total_foreign_income
+    foreign_income.sum(&:dividend_income)
   end
 
   def paye_net_pension_contributions
