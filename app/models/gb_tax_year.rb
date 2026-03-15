@@ -96,6 +96,10 @@ class GBTaxYear < ApplicationRecord
     errors.add(:dividend_higher_rate, "missing") if dividend_higher_rate.nil?
     errors.add(:dividend_additional_rate, "missing") if dividend_additional_rate.nil?
 
+    errors.add(:personal_allowance_reduction_threshold, "missing") if personal_allowance_reduction_threshold.nil?
+    errors.add(:personal_allowance_reduction_step, "missing") if personal_allowance_reduction_step.nil?
+    errors.add(:personal_allowance_reduction_value, "missing") if personal_allowance_reduction_value.nil?
+
     valid_taxpayers = ["GB-UKM"]
 
     if year < 2016

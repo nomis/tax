@@ -4,6 +4,9 @@
 
 y = GBTaxYear.find_or_create_by(year: 2012)
 y.personal_allowance = 8105
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 42475 - y.personal_allowance
@@ -25,6 +28,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2013)
 y.personal_allowance = 9440
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 41450 - y.personal_allowance
@@ -46,6 +52,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2014)
 y.personal_allowance = 10000
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 41865 - y.personal_allowance
@@ -67,6 +76,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2015)
 y.personal_allowance = 10600
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 42385 - y.personal_allowance
@@ -88,6 +100,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2016)
 y.personal_allowance = 11000
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 43000 - y.personal_allowance
@@ -115,6 +130,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2017)
 y.personal_allowance = 11500
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 45000 - y.personal_allowance
@@ -155,6 +173,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2018)
 y.personal_allowance = 11850
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 46350 - y.personal_allowance
@@ -199,6 +220,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2019)
 y.personal_allowance = 12500
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50000 - y.personal_allowance
@@ -243,6 +267,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2020)
 y.personal_allowance = 12500
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50000 - y.personal_allowance
@@ -287,6 +314,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2021)
 y.personal_allowance = 12570
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50270 - y.personal_allowance
@@ -331,6 +361,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2022)
 y.personal_allowance = 12570
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50270 - y.personal_allowance
@@ -371,6 +404,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2023)
 y.personal_allowance = 12570
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50270 - y.personal_allowance
@@ -411,6 +447,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2024)
 y.personal_allowance = 12570
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50270 - y.personal_allowance
@@ -453,6 +492,9 @@ y.save!
 
 y = GBTaxYear.find_or_create_by(year: 2025)
 y.personal_allowance = 12570
+y.personal_allowance_reduction_threshold = 100000
+y.personal_allowance_reduction_step = 2
+y.personal_allowance_reduction_value = 1
 
 y.basic_rate = 20
 y.basic_band = 50270 - y.personal_allowance

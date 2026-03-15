@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_03_15_094715) do
+ActiveRecord::Schema.define(version: 2026_03_15_103103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,9 @@ ActiveRecord::Schema.define(version: 2026_03_15_094715) do
     t.decimal "sco_top_rate", precision: 12, scale: 6
     t.decimal "sipp_target_adjust", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "income_target", precision: 12, scale: 2
+    t.decimal "personal_allowance_reduction_threshold", precision: 12, scale: 2
+    t.decimal "personal_allowance_reduction_step", precision: 12, scale: 2
+    t.decimal "personal_allowance_reduction_value", precision: 12, scale: 2
     t.index ["year"], name: "index_gb_tax_years_on_year", unique: true
   end
 
