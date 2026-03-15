@@ -278,7 +278,11 @@ class GBTaxCalculation
     min_sipp = paye_pension[:higher_income]
     max_sipp = [paye_pension[:pension_annual_allowance_remaining],
       total_income - (basic_rate_tax_relief - sipp_gross_pension_contributions)].min
-    target_sipp_adjusted = [paye_pension[:higher_income] - @data.total_benefit_in_kind.floor + @data.sipp_target_adjust, 0].max
+    if @data.income_target.nil?
+      target_sipp_adjusted = [paye_pension[:higher_income] - @data.total_benefit_in_kind.floor + @data.sipp_target_adjust, 0].max
+    else
+      target_sipp_adjusted = [[total_income - gross_gift_aid, 0].max - @data.income_target, 0].max
+    end
     @target_sipp = [paye_pension[:pension_annual_allowance_remaining], target_sipp_adjusted].min
 
     outputs << ["SIPP Pension Contributions",
