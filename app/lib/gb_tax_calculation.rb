@@ -256,6 +256,7 @@ class GBTaxCalculation
         element("minus allowable expenses", @data.allowable_expenses.ceil, :amount, [:comparable]),
         element("Total from all employments", employment_income, :amount, [:comparable]),
         element,
+        element("Dividends (foreign)", @data.total_foreign_income.floor, :amount, [:comparable]),
         element("Gross Interest", @data.gross_interest, :amount),
         element("Net Interest", @data.net_interest, :amount),
         element("Interest (UK)", total_interest, :amount, [:comparable]),
@@ -339,7 +340,7 @@ class GBTaxCalculation
 
     outputs << ["Tax Adjustment",
       [
-        element("Basic Rate increase", basic_rate_tax_relief, :amount, [:comparable]),
+        element("Basic Rate increase", basic_rate_tax_relief, :amount),
         element("Income Tax charged", final[:tax], :amount, [:comparable]),
         element("PAYE Tax paid", paye_tax_paid, :amount, [:comparable]),
         element("Interest Tax paid", interest_tax_paid, :amount, [:comparable]),
