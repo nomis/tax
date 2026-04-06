@@ -560,9 +560,9 @@ y.starting_rate_for_savings = 0
 y.starting_band_for_savings = 5000
 
 y.dividend_allowance = 500
-y.dividend_basic_rate = "8.75".to_d
-y.dividend_higher_rate = "33.75".to_d
-y.dividend_additional_rate = "39.35".to_d
+y.dividend_basic_rate = "10.75".to_d
+y.dividend_higher_rate = "35.75".to_d
+y.dividend_additional_rate = "41.35".to_d
 
 y.sco_starter_rate = 19
 y.sco_starter_band = 16537 - y.personal_allowance
